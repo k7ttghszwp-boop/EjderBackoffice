@@ -1,0 +1,127 @@
+@model IEnumerable<EjderBackoffice.Web.Models.Reservation>
+@using EjderBackoffice.Web.Models
+
+@{
+    Layout = "_LayoutBackoffice";
+    ViewData["Title"] = "Rezervasyonlar";
+}
+
+@functions{
+    string StatusText(ReservationStatus s) => s switch
+    {
+        ReservationStatus.Onaylandi => "Onaylandı",
+        ReservationStatus.Iptal => "İptal",
+        _ => "Yeni"
+    };
+
+    string StatusClass(ReservationStatus s) => s switch
+    {
+        ReservationStatus.Onaylandi => "badge badge-green",
+        ReservationStatus.Iptal => "badge badge-red",
+        _ => "badge badge-yellow"
+    };
+}
+
+<div class="page-head">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+    <h1 style="margin:0;">Rezervasyonlar</h1>
+
+    <a href="/Reservations/Create"
+       style="padding:10px 14px; border-radius:10px; background:#9C2D2D; color:#FAEBD7; text-decoration:none; font-weight:700;">
+        + Yeni Rezervasyon
+    </a>
+</div>
+
+</div>
+
+<form method="get" style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
+    <input type="text" name="q" value="@ViewBag.Q"
+           placeholder="PNR / Müşteri / Tur / Durum ara..."
+           style="flex:1; padding:10px; border-radius:10px; border:1px solid #e9eaee;" />
+
+    <select name="status"
+            style="width:170px; padding:10px; border-radius:10px; border:1px solid #e9eaee;">
+        <option value="">Tümü</option>
+        @foreach (ReservationStatus s in Enum.GetValues(typeof(ReservationStatus)))
+        {
+            <option value="@s" selected="@(ViewBag.Status != null && (ReservationStatus)ViewBag.Status == s)">
+                @StatusText(s)
+            </option>
+        }
+    </select>
+
+    <button type="submit"
+            style="padding:10px 14px; border-radius:10px; border:none; background:#9C2D2D; color:#FAEBD7;">
+        Ara
+    </button>
+
+    <a href="/Reservations"
+       style="padding:10px 14px; border-radius:10px; border:1px solid #e9eaee; color:#111; text-decoration:none;">
+        Temizle
+    </a>
+</form>
+
+@{
+    var activeStatus = ViewBag.Status?.ToString();
+}
+
+<a href="/Reservations"
+   class="chip @(activeStatus == null ? "chip-active" : "")">
+    Tümü
+</a>
+
+<a href="/Reservations?status=Yeni"
+   class="chip @(activeStatus == "Yeni" ? "chip-active" : "")">
+    Yeni
+</a>
+
+<a href="/Reservations?status=Onaylandi"
+   class="chip @(activeStatus == "Onaylandi" ? "chip-active" : "")">
+    Onaylandı
+</a>
+
+<a href="/Reservations?status=Iptal"
+   class="chip @(activeStatus == "Iptal" ? "chip-active" : "")">
+    İptal
+</a>
+
+
+<div class="card">
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="text-align:left; color:#667085; font-size:13px;">
+                <th style="padding:12px;">PNR</th>
+                <th style="padding:12px;">Müşteri</th>
+                <th style="padding:12px;">Tur</th>
+                <th style="padding:12px;">Tarih</th>
+                <th style="padding:12px;">Tutar</th>
+                <th style="padding:12px;">Durum</th>
+                <th style="padding:12px;"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var r in Model)
+        {
+            <tr style="border-top:1px solid #f0f1f3;">
+                <td style="padding:12px; font-weight:800;">@r.Pnr</td>
+                <td style="padding:12px;">@r.CustomerName</td>
+                <td style="padding:12px;">@r.TourName</td>
+                <td style="padding:12px;">@r.TourDate.ToString("dd.MM.yyyy")</td>
+                <td style="padding:12px; font-weight:700;">₺ @r.AmountTry.ToString("N0")</td>
+                <td style="padding:12px;">
+                    <span class="@StatusClass(r.Status)">
+                        @StatusText(r.Status)
+                    </span>
+                </td>
+                <td style="padding:12px; text-align:right;">
+                    <a href="/Reservations/Details/@r.Id"
+                       style="color:#9C2D2D; font-weight:700; text-decoration:none;">
+                        Detay →
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

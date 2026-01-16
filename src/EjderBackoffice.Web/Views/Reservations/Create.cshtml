@@ -1,0 +1,99 @@
+@model EjderBackoffice.Web.Models.Reservation
+
+@{
+    Layout = "_LayoutBackoffice";
+    ViewData["Title"] = "Yeni Rezervasyon";
+}
+
+<div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+    <span style="font-size:26px;">➕</span>
+    <h2 style="margin:0;">Yeni Rezervasyon</h2>
+</div>
+
+<form method="post" asp-action="Create" class="card" style="max-width:620px;">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label class="form-label">
+            PNR
+            <span style="font-size:12px; color:#667085;">
+                (Boş bırakırsan otomatik oluşturulur)
+            </span>
+        </label>
+        <input asp-for="Pnr" class="form-input" />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Müşteri Adı</label>
+        <input asp-for="CustomerName" class="form-input" required />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Tur</label>
+
+        <select name="tourId" class="form-input" required>
+            <option value="">Tur seçin...</option>
+            @foreach (var t in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Tours)
+            {
+                <option value="@t.Value">@t.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Tur Tarihi</label>
+        <input asp-for="TourDate" type="date" class="form-input" required />
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Tutar (₺)</label>
+        <input asp-for="AmountTry"
+               type="number"
+               step="0.01"
+               min="0"
+               class="form-input"
+               required />
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:20px;">
+        <button type="submit"
+                style="padding:10px 18px; border:none; border-radius:10px;
+                       background:#9C2D2D; color:#FAEBD7; font-weight:700;">
+            Kaydet
+        </button>
+
+        <a href="/Reservations"
+           style="padding:10px 18px; border-radius:10px;
+                  border:1px solid #e9eaee; text-decoration:none; color:#111;">
+            İptal
+        </a>
+    </div>
+</form>
+
+<style>
+    .form-group {
+        margin-bottom:14px;
+    }
+
+    .form-label {
+        display:block;
+        margin-bottom:6px;
+        font-weight:600;
+        font-size:13px;
+        color:#344054;
+    }
+
+    .form-input {
+        width:100%;
+        padding:10px 12px;
+        border-radius:10px;
+        border:1px solid #e9eaee;
+        font-size:14px;
+    }
+
+    .form-input:focus {
+        outline:none;
+        border-color:#9C2D2D;
+        box-shadow:0 0 0 2px rgba(156,45,45,0.1);
+    }
+</style>

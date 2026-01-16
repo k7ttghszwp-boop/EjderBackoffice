@@ -1,0 +1,60 @@
+@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Ejder Backoffice</title>
+
+    <link rel="stylesheet" href="~/css/backoffice.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="bo-shell">
+        <aside class="bo-sidebar">
+            <div class="bo-brand">
+                <div class="bo-logo">E</div>
+                <div>
+                    <div class="bo-brand-title">Ejder</div>
+                    <div class="bo-brand-sub">Backoffice</div>
+                </div>
+            </div>
+
+            <nav class="bo-nav">
+                <a class="bo-nav-item" href="/Dashboard">Dashboard</a>
+                <a class="bo-nav-item" href="/Reservations">Rezervasyonlar</a>
+                <a class="bo-nav-item" href="#">Turlar</a>
+                <a class="bo-nav-item" href="#">Müşteriler</a>
+                <a class="bo-nav-item" href="#">Finans</a>
+                <a class="bo-nav-item" href="#">Ayarlar</a>
+            </nav>
+        </aside>
+
+        <main class="bo-main">
+            <header class="bo-topbar">
+                <div class="bo-topbar-title">@ViewData["Title"]</div>
+
+                <div class="bo-user">
+                    <span class="bo-user-name">@User.Identity?.Name</span>
+                    <a class="bo-logout" href="/Auth/Logout">Çıkış</a>
+                </div>
+            </header>
+
+            <section class="bo-content">
+                @RenderBody()
+            </section>
+        </main>
+    </div>
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(a => {
+                a.style.transition = "opacity .4s ease, transform .4s ease";
+                a.style.opacity = "0";
+                a.style.transform = "translateY(-6px)";
+                setTimeout(() => a.remove(), 400);
+            });
+        }, 3000);
+    </script>
+@RenderSection("Scripts", required: false)
+
+</body>
+</html>

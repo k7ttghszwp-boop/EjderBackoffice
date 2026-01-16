@@ -1,0 +1,46 @@
+@{
+    Layout = null; // ✅ En garanti: hiçbir layout karışmasın
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Ejder Backoffice</title>
+
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+<body>
+
+<div class="login-wrap">
+    <div class="login-card">
+        <h2 class="login-title">Ejder Backoffice</h2>
+        <div class="login-sub">Lütfen giriş yapın</div>
+
+        @if (!string.IsNullOrWhiteSpace(ViewBag.Error as string))
+        {
+            <div class="login-error">@ViewBag.Error</div>
+        }
+
+        <form method="post">
+            <input type="hidden" name="returnUrl" value="@Context.Request.Query["ReturnUrl"]" />
+
+            <div class="login-field">
+                <label>Kullanıcı Adı</label>
+                <input type="text" name="username" autocomplete="username" />
+            </div>
+
+            <div class="login-field">
+                <label>Şifre</label>
+                <input type="password" name="password" autocomplete="current-password" />
+            </div>
+
+            <button class="login-btn" type="submit">Giriş Yap</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

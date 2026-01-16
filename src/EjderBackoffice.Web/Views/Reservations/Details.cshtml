@@ -1,0 +1,97 @@
+@model EjderBackoffice.Web.Models.Reservation
+@using EjderBackoffice.Web.Models
+
+@{
+    Layout = "_LayoutBackoffice";
+    ViewData["Title"] = "Rezervasyon Detay";
+}
+
+@functions{
+    string StatusText(ReservationStatus s) => s switch
+    {
+        ReservationStatus.Onaylandi => "Onaylandı",
+        ReservationStatus.Iptal => "İptal",
+        _ => "Yeni"
+    };
+
+    string StatusClass(ReservationStatus s) => s switch
+    {
+        ReservationStatus.Onaylandi => "badge badge-green",
+        ReservationStatus.Iptal => "badge badge-red",
+        _ => "badge badge-yellow"
+    };
+}
+
+@if (TempData["Success"] is string msg)
+{
+    <div class="alert alert-success">@msg</div>
+}
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+    <div>
+        <div style="color:#667085; font-size:13px;">PNR</div>
+        <div style="font-size:26px; font-weight:900;">@Model.Pnr</div>
+    </div>
+
+    <a href="/Reservations"
+       style="text-decoration:none; padding:10px 12px; border-radius:12px; border:1px solid #e9eaee; color:#111;">
+        ← Listeye dön
+    </a>
+</div>
+
+<div class="cards" style="grid-template-columns: repeat(2, minmax(0,1fr));">
+
+    <div class="card">
+        <div class="card-title">Müşteri</div>
+        <div class="card-value" style="font-size:18px;">@Model.CustomerName</div>
+        <div class="card-foot">
+            Durum:
+            <span class="@StatusClass(Model.Status)">@StatusText(Model.Status)</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Tur</div>
+        <div class="card-value" style="font-size:18px;">@Model.TourName</div>
+        <div class="card-foot">Tarih: <b>@Model.TourDate.ToString("dd.MM.yyyy")</b></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Tutar</div>
+        <div class="card-value">₺ @Model.AmountTry.ToString("N0")</div>
+        <div class="card-foot">Para Birimi: TRY</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Durum Güncelle</div>
+        <form method="post" action="/Reservations/UpdateStatus" onsubmit="return confirmStatusChange();">
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            <select id="statusSelect" name="status"
+                    style="width:100%; padding:10px; border-radius:10px; border:1px solid #e9eaee;">
+                @foreach (ReservationStatus s in Enum.GetValues(typeof(ReservationStatus)))
+                {
+                    <option value="@s" selected="@(s == Model.Status)">
+                        @StatusText(s)
+                    </option>
+                }
+            </select>
+            <script>
+                function confirmStatusChange() {
+                    const val = document.getElementById("statusSelect").value;
+                    if (val === "Iptal") {
+                        return confirm("Rezervasyon iptal edilecek. Emin misiniz?");
+                    }
+                    return true;
+                }
+            </script>
+            
+            <button type="submit"
+                    style="margin-top:10px; width:100%; padding:10px; border:none; border-radius:10px;
+                           background:#9C2D2D; color:#FAEBD7; font-weight:700; cursor:pointer;">
+                Kaydet
+            </button>
+        </form>
+    </div>
+
+</div>
