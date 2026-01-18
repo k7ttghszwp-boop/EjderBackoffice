@@ -1,0 +1,69 @@
+@model Ejder.Core.Models.Reservation
+
+@{
+    ViewData["Title"] = "Rezervasyon Talebi";
+
+    var unitPrice = Model.UnitPrice ?? 0;
+    var personCount = Model.PersonCount ?? 1;
+}
+
+<section class="section">
+    <h1>@Model.TourName</h1>
+    <p>Rezervasyon Talep Formu</p>
+
+    <form method="post" class="form-card">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="TourName" />
+        <input type="hidden" asp-for="UnitPrice" />
+
+        <label>Müşteri Adı</label>
+        <input asp-for="CustomerName" />
+        <span asp-validation-for="CustomerName"></span>
+
+        <label>Telefon</label>
+        <input asp-for="Phone" />
+        <span asp-validation-for="Phone"></span>
+
+        <label>Tur Tarihi</label>
+        <input asp-for="TourDate" type="date" />
+
+        <label>Kişi Sayısı</label>
+        <input asp-for="PersonCount"
+               type="number"
+               min="1"
+               id="personCount" />
+
+        <div class="price-box">
+            <div>Birim Fiyat</div>
+            <strong>₺ @unitPrice.ToString("N0")</strong>
+        </div>
+
+        <div class="price-box total">
+            <div>Toplam Tutar</div>
+            <strong id="totalPrice">
+                ₺ @(unitPrice * personCount).ToString("N0")
+            </strong>
+        </div>
+
+        <button type="submit" class="btn primary">
+            Rezervasyon Talebi Gönder
+        </button>
+    </form>
+</section>
+
+@section Scripts {
+<script>
+    const personInput = document.getElementById("personCount");
+    const totalEl = document.getElementById("totalPrice");
+    const unitPrice = @unitPrice;
+
+    personInput.addEventListener("input", () => {
+        const count = parseInt(personInput.value || 1);
+        const total = count * unitPrice;
+        totalEl.innerText = "₺ " + total.toLocaleString("tr-TR");
+    });
+</script>
+}

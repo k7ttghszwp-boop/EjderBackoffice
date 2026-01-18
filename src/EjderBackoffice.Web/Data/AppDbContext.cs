@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using EjderBackoffice.Web.Models;
+using Ejder.Core.Models;
 
 namespace EjderBackoffice.Web.Data;
 
@@ -9,5 +9,5 @@ public class AppDbContext : DbContext
         : base(options) { }
 
     public DbSet<Reservation> Reservations => Set<Reservation>();
-    public DbSet<Tour> Tours => Set<Tour>();
+    public DbSet<Product> Products => Set<Product>();
 }

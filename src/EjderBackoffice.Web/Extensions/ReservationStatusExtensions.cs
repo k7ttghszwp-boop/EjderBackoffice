@@ -1,4 +1,4 @@
-using EjderBackoffice.Web.Models;
+using Ejder.Core.Models;
 
 namespace EjderBackoffice.Web.Extensions;
 

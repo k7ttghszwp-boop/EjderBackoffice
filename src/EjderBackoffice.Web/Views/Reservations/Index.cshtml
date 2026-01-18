@@ -1,5 +1,5 @@
-@model IEnumerable<EjderBackoffice.Web.Models.Reservation>
-@using EjderBackoffice.Web.Models
+@model IEnumerable<Ejder.Core.Models.Reservation>
+@using Ejder.Core.Models
 
 @{
     Layout = "_LayoutBackoffice";
@@ -24,14 +24,14 @@
 
 <div class="page-head">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-    <h1 style="margin:0;">Rezervasyonlar</h1>
+        <h1 style="margin:0;">Rezervasyonlar</h1>
 
-    <a href="/Reservations/Create"
-       style="padding:10px 14px; border-radius:10px; background:#9C2D2D; color:#FAEBD7; text-decoration:none; font-weight:700;">
-        + Yeni Rezervasyon
-    </a>
-</div>
-
+        <a href="/Reservations/Create"
+           style="padding:10px 14px; border-radius:10px; background:#9C2D2D; color:#FAEBD7;
+                  text-decoration:none; font-weight:700;">
+            + Yeni Rezervasyon
+        </a>
+    </div>
 </div>
 
 <form method="get" style="display:flex; gap:10px; margin-bottom:10px; align-items:center;">
@@ -51,12 +51,14 @@
     </select>
 
     <button type="submit"
-            style="padding:10px 14px; border-radius:10px; border:none; background:#9C2D2D; color:#FAEBD7;">
+            style="padding:10px 14px; border-radius:10px; border:none;
+                   background:#9C2D2D; color:#FAEBD7;">
         Ara
     </button>
 
     <a href="/Reservations"
-       style="padding:10px 14px; border-radius:10px; border:1px solid #e9eaee; color:#111; text-decoration:none;">
+       style="padding:10px 14px; border-radius:10px; border:1px solid #e9eaee;
+              color:#111; text-decoration:none;">
         Temizle
     </a>
 </form>
@@ -65,26 +67,12 @@
     var activeStatus = ViewBag.Status?.ToString();
 }
 
-<a href="/Reservations"
-   class="chip @(activeStatus == null ? "chip-active" : "")">
-    Tümü
-</a>
-
-<a href="/Reservations?status=Yeni"
-   class="chip @(activeStatus == "Yeni" ? "chip-active" : "")">
-    Yeni
-</a>
-
-<a href="/Reservations?status=Onaylandi"
-   class="chip @(activeStatus == "Onaylandi" ? "chip-active" : "")">
-    Onaylandı
-</a>
-
-<a href="/Reservations?status=Iptal"
-   class="chip @(activeStatus == "Iptal" ? "chip-active" : "")">
-    İptal
-</a>
-
+<div style="margin-bottom:10px;">
+    <a href="/Reservations" class="chip @(activeStatus == null ? "chip-active" : "")">Tümü</a>
+    <a href="/Reservations?status=Yeni" class="chip @(activeStatus == "Yeni" ? "chip-active" : "")">Yeni</a>
+    <a href="/Reservations?status=Onaylandi" class="chip @(activeStatus == "Onaylandi" ? "chip-active" : "")">Onaylandı</a>
+    <a href="/Reservations?status=Iptal" class="chip @(activeStatus == "Iptal" ? "chip-active" : "")">İptal</a>
+</div>
 
 <div class="card">
     <table style="width:100%; border-collapse:collapse;">
@@ -104,16 +92,31 @@
         @foreach (var r in Model)
         {
             <tr style="border-top:1px solid #f0f1f3;">
-                <td style="padding:12px; font-weight:800;">@r.Pnr</td>
+                <td style="padding:12px; font-weight:800;">
+                    @(string.IsNullOrWhiteSpace(r.Pnr) ? "-" : r.Pnr)
+                </td>
+
                 <td style="padding:12px;">@r.CustomerName</td>
                 <td style="padding:12px;">@r.TourName</td>
-                <td style="padding:12px;">@r.TourDate.ToString("dd.MM.yyyy")</td>
-                <td style="padding:12px; font-weight:700;">₺ @r.AmountTry.ToString("N0")</td>
+
+                <td style="padding:12px;">
+                    @(r.TourDate.HasValue
+                        ? r.TourDate.Value.ToString("dd.MM.yyyy")
+                        : "-")
+                </td>
+
+                <td style="padding:12px; font-weight:700;">
+                    @(r.AmountTry.HasValue
+                        ? "₺ " + r.AmountTry.Value.ToString("N0")
+                        : "-")
+                </td>
+
                 <td style="padding:12px;">
                     <span class="@StatusClass(r.Status)">
                         @StatusText(r.Status)
                     </span>
                 </td>
+
                 <td style="padding:12px; text-align:right;">
                     <a href="/Reservations/Details/@r.Id"
                        style="color:#9C2D2D; font-weight:700; text-decoration:none;">

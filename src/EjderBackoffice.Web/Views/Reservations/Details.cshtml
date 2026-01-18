@@ -1,5 +1,5 @@
-@model EjderBackoffice.Web.Models.Reservation
-@using EjderBackoffice.Web.Models
+@model Ejder.Core.Models.Reservation
+@using Ejder.Core.Models
 
 @{
     Layout = "_LayoutBackoffice";
@@ -30,7 +30,15 @@
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
     <div>
         <div style="color:#667085; font-size:13px;">PNR</div>
-        <div style="font-size:26px; font-weight:900;">@Model.Pnr</div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Pnr))
+        {
+            <div style="font-size:26px; font-weight:900;">@Model.Pnr</div>
+        }
+        else
+        {
+            <div style="font-size:18px; color:#999;">Henüz oluşturulmadı</div>
+        }
     </div>
 
     <a href="/Reservations"
@@ -43,31 +51,53 @@
 
     <div class="card">
         <div class="card-title">Müşteri</div>
-        <div class="card-value" style="font-size:18px;">@Model.CustomerName</div>
+        <div class="card-value" style="font-size:18px;">
+            @Model.CustomerName
+        </div>
         <div class="card-foot">
             Durum:
-            <span class="@StatusClass(Model.Status)">@StatusText(Model.Status)</span>
+            <span class="@StatusClass(Model.Status)">
+                @StatusText(Model.Status)
+            </span>
         </div>
     </div>
 
     <div class="card">
         <div class="card-title">Tur</div>
-        <div class="card-value" style="font-size:18px;">@Model.TourName</div>
-        <div class="card-foot">Tarih: <b>@Model.TourDate.ToString("dd.MM.yyyy")</b></div>
+        <div class="card-value" style="font-size:18px;">
+            @Model.TourName
+        </div>
+        <div class="card-foot">
+            Tarih:
+            <b>
+                @(Model.TourDate.HasValue
+                    ? Model.TourDate.Value.ToString("dd.MM.yyyy")
+                    : "-")
+            </b>
+        </div>
     </div>
 
     <div class="card">
         <div class="card-title">Tutar</div>
-        <div class="card-value">₺ @Model.AmountTry.ToString("N0")</div>
+        <div class="card-value">
+            ₺ @(Model.AmountTry.HasValue
+                ? Model.AmountTry.Value.ToString("N0")
+                : "-")
+        </div>
         <div class="card-foot">Para Birimi: TRY</div>
     </div>
 
     <div class="card">
         <div class="card-title">Durum Güncelle</div>
-        <form method="post" action="/Reservations/UpdateStatus" onsubmit="return confirmStatusChange();">
+
+        <form method="post"
+              action="/Reservations/UpdateStatus"
+              onsubmit="return confirmStatusChange();">
+
             <input type="hidden" name="id" value="@Model.Id" />
 
-            <select id="statusSelect" name="status"
+            <select id="statusSelect"
+                    name="status"
                     style="width:100%; padding:10px; border-radius:10px; border:1px solid #e9eaee;">
                 @foreach (ReservationStatus s in Enum.GetValues(typeof(ReservationStatus)))
                 {
@@ -76,6 +106,7 @@
                     </option>
                 }
             </select>
+
             <script>
                 function confirmStatusChange() {
                     const val = document.getElementById("statusSelect").value;
@@ -85,10 +116,12 @@
                     return true;
                 }
             </script>
-            
+
             <button type="submit"
-                    style="margin-top:10px; width:100%; padding:10px; border:none; border-radius:10px;
-                           background:#9C2D2D; color:#FAEBD7; font-weight:700; cursor:pointer;">
+                    style="margin-top:10px; width:100%; padding:10px;
+                           border:none; border-radius:10px;
+                           background:#9C2D2D; color:#FAEBD7;
+                           font-weight:700; cursor:pointer;">
                 Kaydet
             </button>
         </form>

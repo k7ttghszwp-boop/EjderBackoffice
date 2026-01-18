@@ -4,11 +4,11 @@
     ViewData["Title"] = "Turlar";
 }
 
-<h2>Turlar</h2>
+<h1>Turlar</h1>
 
-<a href="/Products/Create" class="btn btn-primary">+ Yeni Tur</a>
+<a href="/Tours/Create">+ Yeni Tur</a>
 
-<table class="table">
+<table>
     <thead>
         <tr>
             <th>Ad</th>
@@ -18,13 +18,13 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var p in Model)
+    @foreach (var t in Model)
     {
         <tr>
-            <td>@p.Name</td>
-            <td>@p.DurationDays Gün</td>
-            <td>₺ @p.Price.ToString("N0")</td>
-            <td>@p.Slug</td>
+            <td>@t.Name</td>
+            <td>@t.DurationDays Gün</td>
+            <td>₺ @t.Price.ToString("N0")</td>
+            <td>@t.Slug</td>
         </tr>
     }
     </tbody>

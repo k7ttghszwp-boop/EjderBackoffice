@@ -1,0 +1,22 @@
+@model IEnumerable<Ejder.Core.Models.TourProgramDay>
+@{
+    Layout = "_LayoutBackoffice";
+    var p = ViewBag.Product;
+}
+
+<h2>@p.Name – Program</h2>
+
+<form method="post" action="/Products/AddDay">
+    <input type="hidden" name="ProductId" value="@p.Id" />
+    <input name="DayNumber" placeholder="Gün" />
+    <input name="Title" placeholder="Başlık" />
+    <textarea name="Description" placeholder="Açıklama"></textarea>
+    <button type="submit">Ekle</button>
+</form>
+
+<hr />
+
+@foreach (var d in Model)
+{
+    <div><b>Gün @d.DayNumber:</b> @d.Title</div>
+}

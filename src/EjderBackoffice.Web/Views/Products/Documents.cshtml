@@ -1,0 +1,21 @@
+@model Ejder.Core.Models.TourDocument
+@{
+    Layout = "_LayoutBackoffice";
+    var productId = (int)ViewBag.ProductId;
+}
+
+<h2>Tur Dokümanı</h2>
+
+<form method="post" enctype="multipart/form-data" action="/Products/UploadPdf">
+    <input type="hidden" name="productId" value="@productId" />
+    <input type="file" name="file" accept="application/pdf" />
+    <button type="submit">Yükle</button>
+</form>
+
+@if (Model != null)
+{
+    <p>
+        Mevcut PDF:
+        <a href="@Model.FilePath" target="_blank">@Model.FileName</a>
+    </p>
+}

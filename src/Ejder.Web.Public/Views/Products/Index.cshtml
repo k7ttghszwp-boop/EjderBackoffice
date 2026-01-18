@@ -1,13 +1,8 @@
 @model IEnumerable<Ejder.Core.Models.Product>
-@{
-    ViewData["Title"] = "Turlarımız";
-}
 
 <section class="hero">
-    <div class="hero-content">
-        <h1>Dünyayı Keşfetmenin<br />En Premium Hali</h1>
-        <p>Özenle hazırlanmış butik yurt dışı turlar</p>
-    </div>
+    <h1>Dünyayı Keşfetmenin<br />En Premium Hali</h1>
+    <p>Özenle hazırlanmış butik yurt dışı turlar</p>
 </section>
 
 <section class="section">
@@ -22,7 +17,7 @@
 
                 <div class="card-bottom">
                     <span class="price">₺ @tour.Price.ToString("N0")</span>
-                    <a class="btn" href="/turlar/@tour.Slug">Detay</a>
+                    <a class="btn" href="/products/@tour.Slug">Detay</a>
                 </div>
             </div>
         }

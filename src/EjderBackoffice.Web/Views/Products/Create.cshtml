@@ -1,0 +1,20 @@
+@model Ejder.Core.Models.Product
+@{
+    Layout = "_LayoutBackoffice";
+    ViewData["Title"] = "Yeni Tur";
+}
+
+<h1>Yeni Tur</h1>
+
+<form method="post">
+    <label>Tur Adı</label>
+    <input asp-for="Name" />
+
+    <label>Süre (Gün)</label>
+    <input asp-for="DurationDays" type="number" />
+
+    <label>Fiyat</label>
+    <input asp-for="Price" type="number" />
+
+    <button type="submit">Kaydet</button>
+</form>
