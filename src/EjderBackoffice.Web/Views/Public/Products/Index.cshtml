@@ -1,0 +1,43 @@
+@model IEnumerable<EjderBackoffice.Web.Models.Tour>
+
+@{
+    Layout = "_LayoutPublic";
+    ViewData["Title"] = "Turlarımız";
+}
+
+<div class="public-container">
+    <h1 style="margin-bottom:16px;">Turlarımız</h1>
+
+    <div class="product-grid">
+    @foreach (var t in Model)
+    {
+        <div class="product-card">
+            <div class="product-image">
+                @t.Name.Substring(0,1)
+            </div>
+
+            <div class="product-body">
+                <div class="product-title">@t.Name</div>
+
+                <div class="product-desc">
+                    Eşsiz rotalar, profesyonel rehberlik ve unutulmaz anılar.
+                </div>
+
+                <div class="product-meta">
+                    <span>7 Gün</span>
+                    <span>₺ 79.900+</span>
+                </div>
+
+                <div class="product-actions">
+                    <a class="btn-outline" href="/Products/Detail/@t.Id">
+                        Detay
+                    </a>
+                    <a class="btn-primary" href="/Products/Detail/@t.Id#talep">
+                        Talep Bırak
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+</div>

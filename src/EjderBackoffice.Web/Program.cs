@@ -36,8 +36,17 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 🔒 BACKOFFICE
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+    name: "admin",
+    pattern: "admin/{controller=Dashboard}/{action=Index}/{id?}"
+);
+
+// 🌍 PUBLIC
+app.MapControllerRoute(
+    name: "public",
+    pattern: "{controller=Products}/{action=Index}/{id?}"
+);
+
 
 app.Run();

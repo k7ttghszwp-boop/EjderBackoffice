@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Ejder Turizm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/css/public.css" />
+</head>
+<body>
+
+<header style="padding:16px 24px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+    <strong>Ejder Turizm</strong>
+    <a href="/admin" style="text-decoration:none; color:#9C2D2D; font-weight:700;">
+        Personel Girişi
+    </a>
+</header>
+
+
+<main style="padding:24px;">
+    @RenderBody()
+</main>
+
+<footer style="padding:16px; border-top:1px solid #eee; margin-top:40px;">
+    © @DateTime.Now.Year Ejder Turizm
+</footer>
+
+</body>
+</html>

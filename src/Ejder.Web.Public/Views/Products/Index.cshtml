@@ -1,0 +1,30 @@
+@model IEnumerable<Ejder.Core.Models.Product>
+@{
+    ViewData["Title"] = "Turlarımız";
+}
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Dünyayı Keşfetmenin<br />En Premium Hali</h1>
+        <p>Özenle hazırlanmış butik yurt dışı turlar</p>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Turlarımız</h2>
+
+    <div class="grid">
+        @foreach (var tour in Model)
+        {
+            <div class="card">
+                <h3>@tour.Name</h3>
+                <p>@tour.DurationDays Gün</p>
+
+                <div class="card-bottom">
+                    <span class="price">₺ @tour.Price.ToString("N0")</span>
+                    <a class="btn" href="/turlar/@tour.Slug">Detay</a>
+                </div>
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,97 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  margin: 0;
+  background: #fafafa;
+  color: #111;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.header {
+  background: white;
+  border-bottom: 1px solid #eee;
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.hero {
+  padding: 120px 20px;
+  text-align: center;
+  background: white;
+}
+
+.hero h1 {
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 18px;
+  color: #666;
+}
+
+.section {
+  padding: 80px 20px;
+}
+
+.section h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.05);
+}
+
+.card h3 {
+  font-size: 22px;
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.btn {
+  background: #9C2D2D;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.footer {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}

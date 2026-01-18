@@ -1,0 +1,49 @@
+@model Ejder.Core.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<section class="hero hero-small">
+    <div class="hero-content">
+        <h1>@Model.Name</h1>
+        <p>@Model.DurationDays Günlük Premium Tur Deneyimi</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="detail-grid">
+
+        <!-- SOL -->
+        <div class="detail-content">
+            <h2>Tur Hakkında</h2>
+            <p>
+                Bu tur, Ejder Turizm tarafından özenle hazırlanmış,
+                butik ve premium bir yurt dışı deneyimidir.
+            </p>
+
+            <h3>Tur Süresi</h3>
+            <p>@Model.DurationDays Gün</p>
+
+            <h3>Fiyat</h3>
+            <p class="price-big">
+                ₺ @Model.Price.ToString("N0")
+            </p>
+        </div>
+
+        <!-- SAĞ -->
+        <div class="detail-box">
+            <div class="box-price">
+                ₺ @Model.Price.ToString("N0")
+            </div>
+
+            <a class="btn btn-primary" href="/iletisim">
+                Rezervasyon Talebi
+            </a>
+
+            <a class="btn btn-outline" href="/products">
+                ← Tüm Turlar
+            </a>
+        </div>
+
+    </div>
+</section>
