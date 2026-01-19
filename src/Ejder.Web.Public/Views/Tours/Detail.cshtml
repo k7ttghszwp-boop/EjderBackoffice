@@ -1,0 +1,223 @@
+@model Ejder.Web.Public.Models.Tour
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "_Layout";
+}
+
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success">@TempData["Ok"]</div>
+}
+@if (TempData["Err"] != null)
+{
+    <div class="alert alert-danger">@TempData["Err"]</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm rounded-4 overflow-hidden">
+            <img src="@Model.ImageUrl" class="img-fluid" style="height:320px; width:100%; object-fit:cover;" />
+            <div class="card-body">
+                <div class="text-muted small">@Model.Country • @Model.Days Gün</div>
+                <h2 class="fw-bold mt-1">@Model.Title</h2>
+                <p class="text-muted">@Model.Summary</p>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <span class="badge bg-light text-dark border">Premium</span>
+                    <span class="badge bg-light text-dark border">Butik Grup</span>
+                    <span class="badge bg-light text-dark border">Rehberli</span>
+                </div>
+
+                <hr />
+
+                <h5 class="fw-bold">Öne Çıkanlar</h5>
+                <ul class="list-unstyled mb-0">
+                @foreach (var h in Model.Highlights)
+                {
+                    <li class="mb-1">✔️ @h</li>
+                }
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="card shadow-sm rounded-4 mt-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Program</h5>
+
+                <div class="accordion" id="accProg">
+                    @for (int i = 0; i < Model.Program.Count; i++)
+                    {
+                        var itemId = $"p{i}";
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="h-@itemId">
+                                <button class="accordion-button @(i==0 ? "" : "collapsed")" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#c-@itemId">
+                                    Gün @(i+1)
+                                </button>
+                            </h2>
+                            <div id="c-@itemId" class="accordion-collapse collapse @(i==0 ? "show" : "")"
+                                 data-bs-parent="#accProg">
+                                <div class="accordion-body">
+                                    @Model.Program[i]
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4 h-100">
+                    <div class="card-body">
+                        <h6 class="fw-bold">Dahil Olanlar</h6>
+                        <ul class="mb-0">
+                            @foreach (var x in Model.Included)
+                            {
+                                <li>@x</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4 h-100">
+                    <div class="card-body">
+                        <h6 class="fw-bold">Dahil Olmayanlar</h6>
+                        <ul class="mb-0">
+                            @foreach (var x in Model.NotIncluded)
+                            {
+                                <li>@x</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm rounded-4 sticky-top" style="top:90px;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-muted small">Kişi başı</div>
+                    <div class="fw-bold fs-4 text-brand">
+                        ₺ <span id="priceValue">@Model.PriceTry.ToString("N0")</span>
+                    </div>
+                    <div id="capacityAlert" class="alert alert-warning py-2 px-3 mt-3 d-none mb-0">
+                        Seçilen tarihte kontenjan sınırlı.
+                    </div>
+
+                </div>
+
+                <div id="selectedDateInfo" class="text-muted small mt-1">
+                    Tarih seçilince burada görünecek.
+                </div>
+
+
+                <hr />
+
+                <h5 class="fw-bold mb-3">Rezervasyon Talebi</h5>
+
+                <form method="post" action="/Tours/RequestTour">
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="mb-2">
+                        <label class="form-label">Ad Soyad</label>
+                        <input class="form-control" name="fullName" required />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Telefon</label>
+                        <input class="form-control" name="phone" required />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">E-posta</label>
+                        <input class="form-control" name="email" type="email" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Tur Tarihi</label>
+                        <select class="form-select" id="tourDateSelect" name="tourDateId" required>
+                            <option value="">Tarih seçin</option>
+
+                            @foreach (var d in Model.Dates.OrderBy(x => x.StartDate))
+                            {
+                                var disabled = d.Available <= 0;
+                                var label = $"{d.RangeText} • ₺ {d.PriceTry:N0} • Kontenjan: {d.Available}/{d.Capacity}";
+                                <option
+                                    value="@d.Id"
+                                    data-price="@d.PriceTry"
+                                    data-range="@d.RangeText"
+                                    data-available="@d.Available"
+                                    disabled="@(disabled ? "disabled" : null)">
+                                    @label @(disabled ? " (DOLU)" : "")
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Kişi Sayısı</label>
+                        <input class="form-control" name="pax" type="number" min="1" value="2" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Not</label>
+                        <textarea class="form-control" name="note" rows="3"></textarea>
+                    </div>
+
+                    <button class="btn btn-brand w-100 py-2">
+                        📞 Ücretsiz Bilgi Al
+                    </button>
+                    <div class="text-muted small mt-2">
+                            Ödeme alınmaz. Uzman ekibimiz sizi arayarak tüm detayları paylaşır
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+<script>
+(function () {
+  const select = document.getElementById('tourDateSelect');
+  const priceValue = document.getElementById('priceValue');
+  const info = document.getElementById('selectedDateInfo');
+  const alertBox = document.getElementById('capacityAlert');
+
+  if (!select || !priceValue || !info) return;
+
+  const fmt = new Intl.NumberFormat('tr-TR');
+
+  function update() {
+    const opt = select.options[select.selectedIndex];
+    if (!opt || !opt.value) {
+      info.textContent = "Lütfen bir tur tarihi seçin.";
+      alertBox?.classList.add('d-none');
+      return;
+    }
+
+    const price = parseFloat(opt.dataset.price || "0");
+    const range = opt.dataset.range || "";
+    const available = parseInt(opt.dataset.available || "0", 10);
+
+    if (!isNaN(price) && price > 0) {
+      priceValue.textContent = fmt.format(price);
+    }
+
+    info.textContent = `Seçilen tarih: ${range} • Kalan kontenjan: ${available}`;
+
+    // Kontenjan azsa uyarı göster (ör: 5 ve altı)
+    if (alertBox) {
+      if (available <= 5) alertBox.classList.remove('d-none');
+      else alertBox.classList.add('d-none');
+    }
+  }
+
+  select.addEventListener('change', update);
+  update();
+})();
+</script>
+}

@@ -1,0 +1,128 @@
+@using Ejder.Core.HR
+@{
+    ViewData["Title"] = "Yönetici";
+    Layout = "_Layout";
+
+    var list = ViewBag.TodayAll as List<Attendance> ?? new List<Attendance>();
+
+    int total = list.Count;
+    int inside = list.Count(x => x.CheckIn != null && x.CheckOut == null);
+    int done = list.Count(x => x.CheckIn != null && x.CheckOut != null);
+}
+
+<div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+    <div>
+        <h3 class="mb-1">Yönetici Paneli</h3>
+        <div class="text-muted">Bugünkü personel giriş/çıkış takibi</div>
+    </div>
+    <span class="badge badge-soft px-3 py-2">
+        Tarih: <strong>@DateTime.Today.ToString("dd.MM.yyyy")</strong>
+    </span>
+</div>
+
+<div class="row g-3 mt-3">
+    <div class="col-12 col-md-4">
+        <div class="card shadow-soft">
+            <div class="card-body">
+                <div class="text-muted small">Toplam Kayıt</div>
+                <div class="fs-3 fw-bold">@total</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card shadow-soft">
+            <div class="card-body">
+                <div class="text-muted small">İçeride</div>
+                <div class="fs-3 fw-bold">@inside</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card shadow-soft">
+            <div class="card-body">
+                <div class="text-muted small">Çıkış Yapan</div>
+                <div class="fs-3 fw-bold">@done</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ✅ CANLI DURUM BİLGİSİ *@
+@if (inside > 0)
+{
+    <div class="alert alert-success mt-3 mb-0">
+        Şu anda <strong>@inside</strong> personel içeride.
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary mt-3 mb-0">
+        Şu anda içeride personel yok.
+    </div>
+}
+
+<div class="card shadow-soft mt-4">
+    <div class="card-body">
+        <div class="fw-semibold mb-1">Bugünkü Kayıtlar</div>
+        <div class="text-muted small mb-3">Giriş/çıkış saatleri ve durum</div>
+
+        @if (!list.Any())
+        {
+            <div class="alert alert-info mb-0">Bugün henüz giriş yapan personel yok.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Personel ID</th>
+                            <th>Personel</th>
+                            <th>Giriş</th>
+                            <th>Çıkış</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in list.OrderByDescending(x => x.CheckIn))
+                    {
+                        var inText = item.CheckIn is DateTime ci ? ci.ToString("HH:mm") : "-";
+                        var outText = item.CheckOut.HasValue ? item.CheckOut.Value.ToString("HH:mm") : "-";
+
+                        var isInside = item.CheckOut == null;
+                        var status = isInside ? "İçeride" : "Çıkış yaptı";
+
+                        // ✅ Badge renkleri iyileştirildi:
+                        var badgeClass = isInside ? "bg-success" : "bg-danger";
+
+                        <tr>
+                            <td class="fw-semibold">@item.EmployeeId</td>
+                            <td>
+                                <div class="fw-semibold">
+                                    @{
+                                        var emp = EmployeeRepository.GetById(item.EmployeeId);
+                                        var fullName = emp?.FullName ?? $"Personel #{item.EmployeeId}";
+                                    }
+                                    @fullName
+                                </div>
+                                <div class="text-muted small">
+                                    ID: @item.EmployeeId
+                                    @if (emp?.Role != null)
+                                    {
+                                        <span class="ms-2">• @emp.Role</span>
+                                    }
+                                </div>
+                            </td>
+                            <td class="fw-semibold">@inText</td>
+                            <td class="fw-semibold">@outText</td>
+                            <td><span class="badge @badgeClass">@status</span></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

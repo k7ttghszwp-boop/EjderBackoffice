@@ -6,15 +6,6 @@ namespace Ejder.Employee.Web.Controllers;
 
 public class PortalController : Controller
 {
-    // 🔹 MVP demo personel
-    private static Ejder.Core.HR.Employee DemoUser = new()
-    {
-        Id = 1,
-        FullName = "Ejder Personel",
-        Email = "personel@ejder.com",
-        Password = "1234"
-    };
-
     // =====================================================
     // LOGIN
     // =====================================================
@@ -26,10 +17,13 @@ public class PortalController : Controller
     [HttpPost]
     public IActionResult Login(string email, string password)
     {
-        if (email == DemoUser.Email && password == DemoUser.Password)
+        // MVP: EmployeeRepository (şimdilik sadece email ile)
+        var user = EmployeeRepository.Login(email, password);
+
+        if (user != null)
         {
-            HttpContext.Session.SetInt32("EmployeeId", DemoUser.Id);
-            HttpContext.Session.SetString("EmployeeName", DemoUser.FullName);
+            HttpContext.Session.SetInt32("EmployeeId", user.Id);
+            HttpContext.Session.SetString("EmployeeName", user.FullName);
 
             return RedirectToAction(nameof(Dashboard));
         }
@@ -51,6 +45,31 @@ public class PortalController : Controller
         ViewBag.Today = AttendanceRepository.GetToday(id.Value);
 
         return View();
+    }
+
+    // =====================================================
+    // YÖNETİCİ
+    // =====================================================
+    public IActionResult Yonetici()
+    {
+        var id = GetEmployeeId();
+        if (id == null)
+            return RedirectToAction(nameof(Login));
+
+        // Manager görsün (Resul = Manager)
+        if (!IsManager(id.Value))
+            return RedirectToAction(nameof(Dashboard));
+
+        ViewBag.EmployeeName = HttpContext.Session.GetString("EmployeeName");
+        ViewBag.TodayAll = AttendanceRepository.GetTodayAll();
+
+        return View();
+    }
+
+    private bool IsManager(int employeeId)
+    {
+        var emp = EmployeeRepository.GetById(employeeId);
+        return emp?.Role == EmployeeRole.Manager;
     }
 
     // =====================================================

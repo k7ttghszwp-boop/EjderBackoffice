@@ -1,0 +1,6 @@
+@Ejder.Api_HostAddress = http://localhost:5185
+
+GET {{Ejder.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,33 +1,568 @@
 ﻿@{
-    Layout = "_LayoutPublic";
+    ViewData["Title"] = "Anasayfa";
+    Layout = "_Layout";
 }
 
-<section class="hero">
-    <h1>Dünyayı Keşfetmenin<br />En Şık Hali</h1>
-    <p>Özenle planlanmış premium yurtdışı turlar</p>
+@section Styles {
+<style>
+    .hero-wrap{
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        min-height: 360px;
+        background-image:
+            linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.15) 55%, rgba(0,0,0,0) 100%),
+            url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1800&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+    }
+    .search-card{
+        backdrop-filter: blur(8px);
+        background: rgba(255,255,255,.92);
+        border-radius: 18px;
+    }
+    .chip{
+        border: 1px solid rgba(0,0,0,.1);
+        border-radius: 999px;
+        padding: .35rem .75rem;
+        background: #fff;
+        font-size: .9rem;
+        white-space: nowrap;
+    }
+    .chip:hover{ background:#f7f7f7; }
 
-    <div class="hero-actions">
-        <a href="/turlar" class="btn primary">Turları İncele</a>
-        <a href="/iletisim" class="btn ghost">Bize Ulaşın</a>
+    /* ===== PROMO SLIDER (ETS stack style) ===== */
+    .promo-wrap{
+        background: #f7fbff;
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 22px;
+        padding: 26px;
+    }
+
+    .promo-inner{
+        display: grid;
+        grid-template-columns: 230px 1fr;
+        gap: 18px;
+        align-items: center;
+    }
+
+    /* LEFT THUMB STACK (clickable) */
+    .promo-stack{
+        position: relative;
+        height: 290px;
+        width: 215px;
+        margin-left: 10px;
+    }
+
+    .thumb-card{
+        position: absolute;
+        inset: 0;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        border-radius: 16px;
+        overflow: hidden;
+        cursor: pointer;
+        outline: none;
+        box-shadow: 0 16px 35px rgba(0,0,0,.14);
+        transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+    }
+
+    .thumb-card img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* arka arkaya görünüm */
+    .thumb-card:nth-child(1){ transform: translateX(-10px) translateY(20px) scale(.86); opacity:.30; }
+    .thumb-card:nth-child(2){ transform: translateX(8px)   translateY(12px) scale(.90); opacity:.50; }
+    .thumb-card:nth-child(3){ transform: translateX(26px)  translateY(4px)  scale(.94); opacity:.72; }
+    .thumb-card:nth-child(4){ transform: translateX(44px)  translateY(-4px) scale(.98); opacity:.95; }
+
+    .thumb-card.active{
+        opacity: 1 !important;
+        box-shadow: 0 22px 55px rgba(0,0,0,.22);
+        border: 2px solid rgba(156,45,45,.55);
+    }
+
+    .thumb-card:hover{
+        opacity: 1;
+        box-shadow: 0 22px 55px rgba(0,0,0,.22);
+    }
+
+    /* MAIN STACK SLIDER (no translateX) */
+    .promo-main{ min-width: 0; }
+
+    .promo-viewport{
+        overflow: hidden;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 18px 40px rgba(0,0,0,.12);
+        border: 1px solid rgba(0,0,0,.06);
+    }
+
+    /* stack container */
+    .promo-track{
+        position: relative;
+        height: 330px;
+    }
+
+    /* slides stacked */
+    .promo-slide{
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transform: scale(.985);
+        transition: opacity .45s ease, transform .45s ease;
+        pointer-events: none;
+    }
+
+    .promo-slide.active{
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+        z-index: 2;
+    }
+
+    /* previous card slight behind */
+    .promo-slide.prev{
+        opacity: .25;
+        transform: scale(.97) translateX(-10px);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* overlay vignette */
+    .promo-slide::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:
+            radial-gradient(1200px 400px at 20% 80%, rgba(0,0,0,.55), rgba(0,0,0,0) 55%),
+            linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,0) 55%);
+        pointer-events:none;
+    }
+
+    .promo-img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .promo-overlay{
+        position: absolute;
+        left: 22px;
+        bottom: 22px;
+        right: 22px;
+        color: #fff;
+        z-index: 3;
+    }
+
+    .promo-tag{
+        display: inline-flex;
+        align-items:center;
+        gap:8px;
+        padding: .28rem .7rem;
+        border-radius: 999px;
+        background: rgba(255,255,255,.16);
+        border: 1px solid rgba(255,255,255,.22);
+        font-size: .85rem;
+        margin-bottom: 10px;
+    }
+
+    .promo-title{
+        margin: 0 0 6px 0;
+        font-weight: 850;
+        font-size: 1.35rem;
+        letter-spacing: .2px;
+    }
+
+    .promo-sub{
+        margin: 0;
+        opacity: .9;
+        font-size: .98rem;
+    }
+
+    /* footer */
+    .promo-footer{
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 12px;
+        padding-top: 12px;
+    }
+
+    .promo-foot-text{
+        font-weight: 600;
+        color: rgba(0,0,0,.75);
+    }
+
+    .promo-controls{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .promo-btn{
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.10);
+        background: #fff;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        line-height: 1;
+        box-shadow: 0 8px 18px rgba(0,0,0,.08);
+    }
+    .promo-btn:hover{ background:#f4f4f4; }
+
+    .promo-dots{
+        display: flex;
+        gap: 7px;
+        align-items: center;
+    }
+
+    .promo-dot{
+        width: 8px; height: 8px;
+        border-radius: 999px;
+        background: rgba(0,0,0,.18);
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .promo-dot.active{
+        width: 26px;
+        background: #9C2D2D;
+    }
+
+    @@media (max-width: 992px){
+        .promo-inner{ grid-template-columns: 1fr; }
+        .promo-stack{ display: none; }
+        .promo-track{ height: 260px; }
+        .promo-footer{ grid-template-columns: 1fr; }
+        .promo-controls{ justify-content: flex-start; }
+    }
+</style>
+}
+
+<div class="hero-wrap shadow-sm">
+    <div class="container py-5">
+        <div class="row g-4 align-items-end">
+            <div class="col-lg-6 text-white">
+                <h1 class="display-5 fw-bold mb-2">Hayalindeki turu Ejder ile planla</h1>
+                <p class="lead mb-4" style="opacity:.9">
+                    Butik yurt dışı turlar • Rehberli program • Call center desteği
+                </p>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="search-card p-3 p-md-4 shadow">
+                    <div class="d-flex gap-2 flex-wrap mb-3">
+                        <span class="chip">🌍 Tur</span>
+                        <span class="chip">🗺️ Rota</span>
+                        <span class="chip">📅 Tarih</span>
+                        <span class="chip">👥 Kişi</span>
+                    </div>
+
+                    <form method="get" action="/Tours">
+                        <div class="row g-2">
+                            <div class="col-12 col-md-6">
+                                <input class="form-control" name="q" placeholder="Nereye gitmek istersin? (Küba, Japonya...)" />
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <input class="form-control" name="start" type="date" />
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <input class="form-control" name="end" type="date" />
+                            </div>
+
+                            <div class="col-6 col-md-3">
+                                <select class="form-select" name="pax">
+                                    <option value="2" selected>2 Kişi</option>
+                                    <option value="1">1 Kişi</option>
+                                    <option value="3">3 Kişi</option>
+                                    <option value="4">4 Kişi</option>
+                                    <option value="5">5 Kişi</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-9">
+                                <button class="btn btn-brand w-100">
+                                    🔎 Turları Ara
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 small text-muted">
+                            Popüler: <a href="/Tours" class="text-decoration-none">Küba</a> •
+                            <a href="/Tours" class="text-decoration-none">Japonya</a> •
+                            <a href="/Tours" class="text-decoration-none">Latin</a> •
+                            <a href="/Tours" class="text-decoration-none">Balkan</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
+</div>
 
-<section class="tours">
-    <div class="tour-card">
-        <h3>Küba Turu</h3>
-        <span>7 Gün</span>
-        <strong>₺ 79.900</strong>
-        <div style="margin-top:20px">
-            <a href="#" class="btn primary">Detay</a>
+<div class="row g-3 mt-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <div class="fw-bold">📞 Call Center Satış</div>
+                <div class="text-muted small">Ödeme yok, talep bırakın ekibimiz arasın.</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <div class="fw-bold">🧭 Rehberli Program</div>
+                <div class="text-muted small">Tüm plan hazır: rota, konaklama, transfer.</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body">
+                <div class="fw-bold">✅ Güvenli Süreç</div>
+                <div class="text-muted small">Teklif → onay → rezervasyon, adım adım.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex align-items-center justify-content-between mt-5">
+    <div>
+        <h3 class="fw-bold mb-1">Öne Çıkan Turlar</h3>
+        <div class="text-muted">En çok tercih edilen rotalar</div>
+    </div>
+    <a class="btn btn-outline-secondary" href="/Tours">Tüm Turları Gör</a>
+</div>
+
+<div class="row g-3 mt-2">
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <img class="card-img-top" style="height:180px; object-fit:cover;"
+                 src="https://images.unsplash.com/photo-1542370285-b8eb8317691c?q=80&w=1200&auto=format&fit=crop" />
+            <div class="card-body">
+                <div class="text-muted small">Küba • 7 Gün</div>
+                <h5 class="fw-bold">Küba Turu</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bold">₺ 79.900</div>
+                    <a class="btn btn-brand btn-sm" href="/Tours/Detail/1">Detay</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="tour-card">
-        <h3>Japonya & Kore</h3>
-        <span>10 Gün</span>
-        <strong>₺ 129.900</strong>
-        <div style="margin-top:20px">
-            <a href="#" class="btn primary">Detay</a>
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <img class="card-img-top" style="height:180px; object-fit:cover;"
+                 src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?q=80&w=1200&auto=format&fit=crop" />
+            <div class="card-body">
+                <div class="text-muted small">Japonya / Kore • 10 Gün</div>
+                <h5 class="fw-bold">Japonya & Kore</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bold">₺ 129.900</div>
+                    <a class="btn btn-brand btn-sm" href="/Tours/Detail/2">Detay</a>
+                </div>
+            </div>
         </div>
     </div>
-</section>
+
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <img class="card-img-top" style="height:180px; object-fit:cover;"
+                 src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" />
+            <div class="card-body">
+                <div class="text-muted small">Özel Rotalar • Butik</div>
+                <h5 class="fw-bold">Latin Amerika Seçkisi</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bold">Teklif al</div>
+                    <a class="btn btn-brand btn-sm" href="/Contact">İletişim</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card rounded-4 shadow-sm mt-5">
+    <div class="card-body d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="w-100">
+            <div class="fw-bold fs-5">Kampanyalar & Erken Rezervasyon</div>
+
+            <div class="promo-wrap my-4">
+                <div class="promo-inner">
+
+                    <!-- Sol stacked thumb’lar -->
+                    <div class="promo-stack" id="promoThumbs" aria-label="Kampanyalar küçük görseller">
+                        <button type="button" class="thumb-card active" data-index="0" aria-label="1. kampanya">
+                            <img src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=600&auto=format&fit=crop" alt="Kampanya 1">
+                        </button>
+                        <button type="button" class="thumb-card" data-index="1" aria-label="2. kampanya">
+                            <img src="https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=600&auto=format&fit=crop" alt="Kampanya 2">
+                        </button>
+                        <button type="button" class="thumb-card" data-index="2" aria-label="3. kampanya">
+                            <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?q=80&w=600&auto=format&fit=crop" alt="Kampanya 3">
+                        </button>
+                        <button type="button" class="thumb-card" data-index="3" aria-label="4. kampanya">
+                            <img src="https://images.unsplash.com/photo-1542370285-b8eb8317691c?q=80&w=600&auto=format&fit=crop" alt="Kampanya 4">
+                        </button>
+                    </div>
+
+                    <!-- Ana stack slider -->
+                    <div class="promo-main">
+                        <div class="promo-viewport" id="promoViewport">
+                            <div class="promo-track" id="promoTrack">
+
+                                <div class="promo-slide active">
+                                    <img class="promo-img" src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1600&auto=format&fit=crop" alt="Kampanya 1">
+                                    <div class="promo-overlay">
+                                        <span class="promo-tag">Erken Rezervasyon</span>
+                                        <h3 class="promo-title">Yurt dışı turlarda özel fırsatlar</h3>
+                                        <p class="promo-sub">Sınırlı kontenjan • Call center ile hızlı rezervasyon</p>
+                                    </div>
+                                </div>
+
+                                <div class="promo-slide">
+                                    <img class="promo-img" src="https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1600&auto=format&fit=crop" alt="Kampanya 2">
+                                    <div class="promo-overlay">
+                                        <span class="promo-tag">Kampanya</span>
+                                        <h3 class="promo-title">Küba turlarında yeni tarihleri kaçırma</h3>
+                                        <p class="promo-sub">Mart – Mayıs tarihlerinde opsiyonlu rezervasyon</p>
+                                    </div>
+                                </div>
+
+                                <div class="promo-slide">
+                                    <img class="promo-img" src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?q=80&w=1600&auto=format&fit=crop" alt="Kampanya 3">
+                                    <div class="promo-overlay">
+                                        <span class="promo-tag">✨ Premium</span>
+                                        <h3 class="promo-title">Japonya & Kore rotasında butik grup</h3>
+                                        <p class="promo-sub">Rehberli program • Seçili tarihler dolmak üzere</p>
+                                    </div>
+                                </div>
+
+                                <div class="promo-slide">
+                                    <img class="promo-img" src="https://images.unsplash.com/photo-1542370285-b8eb8317691c?q=80&w=1600&auto=format&fit=crop" alt="Kampanya 4">
+                                    <div class="promo-overlay">
+                                        <span class="promo-tag">🔥 Kampanya</span>
+                                        <h3 class="promo-title">Latin rotalarında yeni sezon</h3>
+                                        <p class="promo-sub">Seçili turlarda avantajlı fiyatlar</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="promo-footer">
+                            <div class="promo-foot-text" id="promoFootText">Erken rezervasyon fırsatlarını keşfet!</div>
+                            <div class="promo-controls">
+                                <button class="promo-btn" type="button" id="promoPrev" aria-label="Önceki">‹</button>
+                                <div class="promo-dots" id="promoDots"></div>
+                                <button class="promo-btn" type="button" id="promoNext" aria-label="Sonraki">›</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="text-muted small">Yeni fırsatlar için bizi arayın veya form bırakın.</div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+            <a class="btn btn-outline-secondary" href="/Tours">Kampanyaları Gör</a>
+            <a class="btn btn-brand" href="/Contact">📩 Teklif İste</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function(){
+  const track = document.getElementById('promoTrack');
+  const dotsWrap = document.getElementById('promoDots');
+  const prev = document.getElementById('promoPrev');
+  const next = document.getElementById('promoNext');
+  const footText = document.getElementById('promoFootText');
+  const viewport = document.getElementById('promoViewport');
+  const thumbsWrap = document.getElementById('promoThumbs');
+
+  if (!track || !dotsWrap || !prev || !next) return;
+
+  const slides = Array.from(track.querySelectorAll('.promo-slide'));
+  let index = 0;
+
+  const texts = [
+    "Erken rezervasyon fırsatlarını keşfet!",
+    "Küba turlarında yeni tarihler – kontenjanlar doluyor.",
+    "Japonya & Kore – premium butik grup dönemi.",
+    "Latin rotalarında yeni sezon avantajları."
+  ];
+
+  function render(){
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === index);
+      s.classList.toggle('prev', i === ((index - 1 + slides.length) % slides.length));
+    });
+
+    Array.from(dotsWrap.children).forEach((d, di) => {
+      d.classList.toggle('active', di === index);
+    });
+
+    const thumbs = document.querySelectorAll('.thumb-card');
+    thumbs.forEach((t, ti) => t.classList.toggle('active', ti === index));
+
+    if (footText) footText.textContent = texts[index] || "";
+  }
+
+  function go(i){
+    index = (i + slides.length) % slides.length;
+    render();
+  }
+
+  // dots create
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.type = "button";
+    b.className = "promo-dot" + (i === 0 ? " active" : "");
+    b.addEventListener('click', () => { go(i); resetAutoplay(); });
+    dotsWrap.appendChild(b);
+  });
+
+  prev.addEventListener('click', () => { go(index - 1); resetAutoplay(); });
+  next.addEventListener('click', () => { go(index + 1); resetAutoplay(); });
+
+  if (thumbsWrap) {
+    thumbsWrap.addEventListener('click', (e) => {
+      const btn = e.target.closest('.thumb-card');
+      if (!btn) return;
+      const i = parseInt(btn.dataset.index || "0", 10);
+      go(i);
+      resetAutoplay();
+    });
+  }
+
+  // autoplay
+  let timer = null;
+  function startAutoplay(){ timer = setInterval(() => go(index + 1), 6000); }
+  function stopAutoplay(){ if (timer) clearInterval(timer); timer = null; }
+  function resetAutoplay(){ stopAutoplay(); startAutoplay(); }
+
+  if (viewport){
+    viewport.addEventListener('mouseenter', stopAutoplay);
+    viewport.addEventListener('mouseleave', startAutoplay);
+  }
+
+  go(0);
+  startAutoplay();
+})();
+</script>
+}

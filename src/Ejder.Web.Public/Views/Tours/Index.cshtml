@@ -1,0 +1,28 @@
+@model List<Ejder.Web.Public.Models.Tour>
+@{
+    ViewData["Title"] = "Turlar";
+    Layout = "_Layout";
+}
+
+<h2 class="fw-bold mb-3">Turlar</h2>
+<p class="text-muted">Butik yurt dışı turlarımızı inceleyin.</p>
+
+<div class="row g-3">
+@foreach (var t in Model)
+{
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <img src="@t.ImageUrl" class="card-img-top" style="height:180px; object-fit:cover;" alt="@t.Title" />
+            <div class="card-body">
+                <div class="text-muted small">@t.Country • @t.Days Gün</div>
+                <h5 class="fw-bold mt-1">@t.Title</h5>
+                <p class="text-muted mb-3">@t.Summary</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bold fs-5">₺ @t.PriceTry.ToString("N0")</div>
+                    <a class="btn btn-brand btn-sm" href="/Tours/Detail/@t.Id">Detay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>
