@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Ejder Personel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="~/css/employee.css" />
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SOL MENÜ -->
+    <aside class="sidebar">
+        <div class="brand">
+            <strong>Ejder</strong>
+            <span>Personel</span>
+        </div>
+
+        <nav>
+            <a href="/Portal/Dashboard">🏠 Dashboard</a>
+            <a href="/Admin/Dashboard">👥 Yönetici</a>
+            <a href="/Portal/Logout">🚪 Çıkış</a>
+        </nav>
+    </aside>
+
+    <!-- ANA ALAN -->
+    <main class="content">
+        <header class="topbar">
+            @ViewData["Title"]
+        </header>
+
+        <section class="page">
+            @RenderBody()
+        </section>
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+@{
+    Layout = "_LayoutEmployee";
+    ViewData["Title"] = "Yönetici Paneli";
+}
+
+@using Ejder.Core.HR
+@model IEnumerable<Attendance>
+
+<h2>Bugün Ofiste</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Personel</th>
+            <th>Giriş</th>
+            <th>Çıkış</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var a in Model)
+    {
+        <tr>
+            <td>@a.EmployeeId</td>
+
+            <!-- CheckIn -->
+            <td>
+                @($"{a.CheckIn:HH:mm}")
+            </td>
+
+            <!-- CheckOut -->
+            <td>
+                @(a.CheckOut != null
+                    ? $"{a.CheckOut:HH:mm}"
+                    : "-")
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

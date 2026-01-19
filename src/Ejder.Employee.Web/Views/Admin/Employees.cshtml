@@ -1,0 +1,28 @@
+@using Ejder.Core.HR
+@model IEnumerable<Employee>
+
+<h1>Personel Listesi</h1>
+
+<table>
+    <tr>
+        <th>Ad Soyad</th>
+        <th>Departman</th>
+        <th>Rol</th>
+        <th>Rapor Verdiği</th>
+    </tr>
+
+@foreach (var e in Model)
+{
+    var dept = DepartmentRepository.GetById(e.DepartmentId);
+    var manager = e.ReportsToEmployeeId.HasValue
+        ? EmployeeRepository.GetById(e.ReportsToEmployeeId.Value)
+        : null;
+
+    <tr>
+        <td>@e.FullName</td>
+        <td>@dept?.Name</td>
+        <td>@e.Role</td>
+        <td>@manager?.FullName ?? "-"</td>
+    </tr>
+}
+</table>

@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Personel Girişi";
+}
+
+<div class="login-card">
+    <h2>Personel Girişi</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert">@ViewBag.Error</div>
+    }
+
+    <form method="post">
+        <label>E-posta</label>
+        <input name="email" />
+
+        <label>Şifre</label>
+        <input name="password" type="password" />
+
+        <button type="submit">Giriş Yap</button>
+    </form>
+</div>

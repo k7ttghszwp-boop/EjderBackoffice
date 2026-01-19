@@ -1,0 +1,43 @@
+@{
+    Layout = "_LayoutEmployee";
+    ViewData["Title"] = "Personel Dashboard";
+    var today = ViewBag.Today as Ejder.Core.HR.Attendance;
+}
+
+<h2>Hoş geldin @ViewBag.EmployeeName 👋</h2>
+
+<div class="card-grid">
+
+    <div class="card">
+        <h3>Giriş</h3>
+        <p>
+            @(today?.CheckIn != null
+                ? $"{today.CheckIn:HH:mm}"
+                : "Henüz giriş yok")
+        </p>
+
+        @if (today?.CheckIn == null)
+        {
+            <form method="post" action="/Portal/CheckIn">
+                <button class="btn primary">Giriş Yap</button>
+            </form>
+        }
+    </div>
+
+    <div class="card">
+        <h3>Çıkış</h3>
+        <p>
+            @(today?.CheckOut != null
+                ? $"{today.CheckOut:HH:mm}"
+                : "Henüz çıkış yok")
+        </p>
+
+        @if (today?.CheckIn != null && today?.CheckOut == null)
+        {
+            <form method="post" action="/Portal/CheckOut">
+                <button class="btn danger">Çıkış Yap</button>
+            </form>
+        }
+    </div>
+
+</div>
