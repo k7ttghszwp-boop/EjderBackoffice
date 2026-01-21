@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<section class="py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-7">
+            <h1 class="fw-bold display-6">
+                Turizm Firmaları İçin<br />
+                Online Rezervasyon & Backoffice Platformu
+            </h1>
+
+            <p class="text-muted mt-3 fs-5">
+                Web, ofis ve bayilerden tek panel ile satış yapın.
+                Modüler yapı, hızlı kurulum, güçlü altyapı.
+            </p>
+
+            <div class="d-flex gap-3 mt-4">
+                <a class="btn btn-danger btn-lg" asp-action="Demo">
+                    Demo Talep Et
+                </a>
+                <a class="btn btn-outline-secondary btn-lg" asp-action="Packages">
+                    Paketleri İncele
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-5 d-none d-lg-block">
+            <div class="bg-light rounded-4 p-4 shadow-sm">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">✔ Web + Ofis + Bayi Satışı</li>
+                    <li class="mb-2">✔ CRM & Operasyon Yönetimi</li>
+                    <li class="mb-2">✔ Online Ödeme & Voucher</li>
+                    <li class="mb-2">✔ API & Entegrasyon Desteği</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-5 border-top">
+    <div class="feature-band rounded-4 p-4 p-md-5 reveal">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold mb-2">Neden Ejder?</h2>
+
+            <div class="stat-pill mx-auto">
+                <i class="bi bi-graph-up-arrow"></i>
+                <span><strong>%18</strong> daha hızlı satış süreci*</span>
+            </div>
+
+            <p class="text-muted mt-3 mb-0">
+                Turizm operasyonunu tek panelde toplayan modüler yapı.
+            </p>
+            <div class="text-muted small mt-2">
+                *Örnek metin: Bu oranı gerçek KPI ölçümünden sonra netleştiririz.
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="feature-card h-100 p-4 reveal">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-puzzle-fill fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold">Modüler Yapı</h5>
+                    <p class="text-muted small">
+                        İhtiyacınız kadar kullanın, büyüdükçe ekleyin.
+                    </p>
+                    <a class="feature-cta" asp-controller="Home" asp-action="Packages">
+                        Modüller <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="feature-card h-100 p-4 reveal">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-grid-1x2-fill fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold">Tek Panel</h5>
+                    <p class="text-muted small">
+                        Web, ofis ve bayiler tek sistemde.
+                    </p>
+                    <a class="feature-cta" asp-controller="Home" asp-action="Demo">
+                        Detay <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="feature-card h-100 p-4 reveal">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-lightning-charge-fill fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold">Güçlü Altyapı</h5>
+                    <p class="text-muted small">
+                        Hızlı, güvenilir ve ölçeklenebilir mimari.
+                    </p>
+                    <a class="feature-cta" asp-controller="Home" asp-action="Packages">
+                        Paketler <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="feature-card h-100 p-4 reveal">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-headset fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold">Türkiye Desteği</h5>
+                    <p class="text-muted small">
+                        Doğrudan iletişim, hızlı çözüm, gerçek destek.
+                    </p>
+                    <a class="feature-cta" asp-controller="Home" asp-action="Contact">
+                        İletişim <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

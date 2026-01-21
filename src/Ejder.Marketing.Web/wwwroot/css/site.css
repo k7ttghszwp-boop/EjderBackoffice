@@ -1,0 +1,158 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+:root{
+  --brand:#9C2D2D;
+  --beige:#FAEBD7;
+}
+
+/* feature band background */
+.feature-band{
+  background: linear-gradient(180deg, rgba(156,45,45,.08), rgba(250,235,215,.55));
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+/* cards */
+.feature-card{
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 18px;
+  background: rgba(255,255,255,.90);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 14px 40px rgba(0,0,0,.10);
+  border-color: rgba(156,45,45,.40);
+}
+
+/* icon */
+.feature-icon{
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(156,45,45,.12);
+  color: var(--brand);
+}
+
+/* mini CTA */
+.feature-cta{
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .9rem;
+}
+.feature-cta:hover{ text-decoration: underline; }
+
+/* stat pill under title */
+.stat-pill{
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem .75rem;
+  border-radius: 999px;
+  background: rgba(250,235,215,.85);
+  border: 1px solid rgba(156,45,45,.18);
+  color: #3a2a2a;
+  font-size: .95rem;
+}
+
+/* subtle scroll animation */
+.reveal{
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+.reveal.is-visible{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* brand button */
+.btn-brand{
+  background: var(--brand);
+  border-color: var(--brand);
+  color:#fff;
+}
+.btn-brand:hover{ filter: brightness(.95); color:#fff; }
+
+/* sticky header varsa anchor'lar üstte kalmasın */
+.section-anchor{
+  scroll-margin-top: 90px;
+}
+
+/* 3-step flow chips */
+.flow{
+  display:flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: .25rem 0 1rem 0;
+}
+
+.flow-step{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  padding:.35rem .6rem;
+  border-radius: 999px;
+  background: rgba(250,235,215,.75);
+  border: 1px solid rgba(156,45,45,.18);
+  color:#3a2a2a;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+.flow-step i{
+  color: var(--brand);
+}
+
+.flow-arrow{
+  color: rgba(156,45,45,.55);
+  align-self: center;
+  margin: 0 .1rem;
+}
+
+/* flow chip linkleri */
+.flow a.flow-step{
+  text-decoration: none;
+  color: inherit;
+}
+.flow a.flow-step:hover{
+  border-color: rgba(156,45,45,.35);
+  background: rgba(250,235,215,.95);
+}

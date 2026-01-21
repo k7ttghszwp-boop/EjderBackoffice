@@ -10,4 +10,16 @@ public class AppDbContext : DbContext
 
     public DbSet<Reservation> Reservations => Set<Reservation>();
     public DbSet<Product> Products => Set<Product>();
+
+    // ✅ Backoffice login için
+    public DbSet<BackofficeUser> BackofficeUsers => Set<BackofficeUser>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<BackofficeUser>()
+            .HasIndex(x => x.Email)
+            .IsUnique();
+    }
 }

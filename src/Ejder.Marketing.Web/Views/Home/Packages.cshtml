@@ -1,0 +1,279 @@
+@{
+    ViewData["Title"] = "Paketler";
+}
+
+<section class="py-4">
+    <div class="text-center mb-4 reveal">
+        <h1 class="fw-bold">Paketler</h1>
+        <p class="text-muted mb-0">İhtiyacınıza göre başlayın, büyüdükçe modül ekleyin.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Starter -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 reveal">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold">Başlangıç</h4>
+                    <p class="text-muted">Web + temel rezervasyon akışı.</p>
+
+                    <ul class="list-unstyled small mb-4">
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Web Sitesi</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Rezervasyon Formu</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Temel Raporlama</li>
+                    </ul>
+
+                    <a class="btn btn-outline-secondary w-100" asp-action="Demo">Teklif Al</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pro -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 reveal" style="outline:1px solid rgba(156,45,45,.25);">
+                <div class="card-body p-4">
+                    <span class="badge mb-2" style="background:var(--brand)">Önerilen</span>
+                    <h4 class="fw-bold">Profesyonel</h4>
+                    <p class="text-muted">Ofis + operasyon + CRM.</p>
+
+                    <ul class="list-unstyled small mb-4">
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Backoffice Panel</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Müşteri / CRM</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Voucher / Mail</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Raporlar & Yetkiler</li>
+                    </ul>
+
+                    <a class="btn btn-brand w-100" asp-action="Demo">Demo Talep</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 reveal">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold">Kurumsal</h4>
+                    <p class="text-muted">B2B + bayi + entegrasyonlar.</p>
+
+                    <ul class="list-unstyled small mb-4">
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>B2B / Bayi Paneli</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>API Entegrasyonu</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Özel Akışlar & Otomasyon</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Öncelikli Destek</li>
+                    </ul>
+
+                    <a class="btn btn-outline-secondary w-100" asp-action="Contact">Görüşelim</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modules -->
+<section class="py-5 border-top mt-4">
+    <div class="text-center mb-4 reveal">
+        <h2 class="fw-bold">Modüller</h2>
+        <p class="text-muted mb-0">Tek tek eklenebilir, ihtiyaca göre açılır.</p>
+    </div>
+
+    <div class="row g-4">
+        @{
+            var modules = new (string Key, string Icon, string Title, string Desc)[] {
+                ("web", "bi-window", "Web Sitesi", "Kampanya, tur listesi, SEO odaklı vitrin."),
+                ("booking", "bi-calendar2-check", "Rezervasyon", "Hızlı kayıt, durum takibi, operasyon akışı."),
+                ("crm", "bi-people", "CRM", "Aday-müşteri takibi, notlar, görevler."),
+                ("b2b", "bi-building", "B2B / Bayi", "Acenta ekranı, kota ve fiyat politikaları."),
+                ("payment", "bi-credit-card", "Ödeme", "Online ödeme veya provizyon süreçleri."),
+                ("api", "bi-diagram-3", "API & Entegrasyon", "Muhasebe, çağrı merkezi, partner sistemleri."),
+                ("reports", "bi-bar-chart", "Raporlama", "Satış, performans, operasyon raporları."),
+                ("auth", "bi-shield-lock", "Yetkilendirme", "Rol bazlı erişim, log kayıtları.")
+            };
+
+            foreach (var m in modules)
+            {
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div id="m-@m.Key" class="feature-card h-100 p-4 reveal section-anchor">
+                        <div class="feature-icon mb-3">
+                            <i class="bi @m.Icon fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">@m.Title</h5>
+                        <p class="text-muted small mb-0">@m.Desc</p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<!-- Use Cases -->
+<section class="py-5 border-top">
+    <div class="text-center mb-4 reveal">
+        <h2 class="fw-bold">Kullanım Senaryoları</h2>
+        <p class="text-muted mb-0">Farklı ekipler tek platform üzerinden aynı veride çalışır.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- B2C -->
+        <div class="col-12 col-lg-3">
+            <div class="feature-card h-100 p-4 reveal">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="feature-icon">
+                        <i class="bi bi-globe2 fs-4"></i>
+                    </div>
+                    <span class="badge" style="background:rgba(156,45,45,.10); color:var(--brand); border:1px solid rgba(156,45,45,.20);">
+                        B2C
+                    </span>
+                </div>
+
+                <h5 class="fw-bold">Online Satış (B2C)</h5>
+                <p class="text-muted small">
+                    Web sitenizden gelen talepler tek havuzda toplanır. Kampanya ve tur sayfaları ile dönüşüm artar.
+                </p>
+
+                <!-- 3 adım akış (tıklanabilir) -->
+                <div class="flow">
+                    <a class="flow-step" href="#m-crm"><i class="bi bi-person-plus"></i> Lead</a>
+                    <span class="flow-arrow">→</span>
+                    <a class="flow-step" href="#m-crm"><i class="bi bi-file-earmark-text"></i> Teklif</a>
+                    <span class="flow-arrow">→</span>
+                    <a class="flow-step" href="#m-booking"><i class="bi bi-calendar2-check"></i> Rezervasyon</a>
+                </div>
+
+                <ul class="list-unstyled small mb-3">
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Tur listeleme & filtre</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Rezervasyon formu / lead</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Voucher / mail otomasyon</li>
+                </ul>
+
+                <a class="feature-cta" asp-controller="Home" asp-action="Demo">
+                    B2C akışını gör <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- B2B -->
+        <div class="col-12 col-lg-3">
+            <div class="feature-card h-100 p-4 reveal">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="feature-icon">
+                        <i class="bi bi-building fs-4"></i>
+                    </div>
+                    <span class="badge" style="background:rgba(156,45,45,.10); color:var(--brand); border:1px solid rgba(156,45,45,.20);">
+                        B2B
+                    </span>
+                </div>
+
+                <h5 class="fw-bold">Acenta & Bayi Satışı (B2B)</h5>
+                <p class="text-muted small">
+                    Bayiler kendi ekranından rezervasyon girer, kota ve fiyat kurallarınız otomatik uygulanır.
+                </p>
+
+                <!-- 3 adım akış (tıklanabilir) -->
+                <div class="flow">
+                    <a class="flow-step" href="#m-b2b"><i class="bi bi-building"></i> Bayi Girişi</a>
+                    <span class="flow-arrow">→</span>
+                    <a class="flow-step" href="#m-b2b"><i class="bi bi-box-seam"></i> Kota/Fiyat</a>
+                    <span class="flow-arrow">→</span>
+                    <a class="flow-step" href="#m-booking"><i class="bi bi-check2-circle"></i> Onay</a>
+                </div>
+
+                <ul class="list-unstyled small mb-3">
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Bayi paneli</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Kota / kontenjan yönetimi</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Komisyon / fiyat politikası</li>
+                </ul>
+
+                <a class="feature-cta" asp-controller="Home" asp-action="Demo">
+                    B2B paneli gör <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Call Center -->
+        <div class="col-12 col-lg-3">
+            <div class="feature-card h-100 p-4 reveal">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="feature-icon">
+                        <i class="bi bi-headset fs-4"></i>
+                    </div>
+                    <span class="badge" style="background:rgba(156,45,45,.10); color:var(--brand); border:1px solid rgba(156,45,45,.20);">
+                        Call Center
+                    </span>
+                </div>
+
+                <h5 class="fw-bold">Çağrı Merkezi Satışı</h5>
+                <p class="text-muted small">
+                    Arayan müşteriyi anında bulun, görüşme notunu ekle, fırsatı rezervasyona çevir.
+                </p>
+
+                <!-- 3 adım akış (tıklanabilir) -->
+                <div class="flow">
+                    <a class="flow-step" href="#m-crm"><i class="bi bi-telephone"></i> Çağrı</a>
+                    <span class="flow-arrow">→</span>
+                    <a class="flow-step" href="#m-crm"><i class="bi bi-chat-left-text"></i> Not/Fırsat</a>
+                    <span class="flow-arrow">→</span>
+                    <a class="flow-step" href="#m-booking"><i class="bi bi-receipt"></i> Satış</a>
+                </div>
+
+                <ul class="list-unstyled small mb-3">
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Müşteri kartı & geçmiş</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Teklif / fırsat takibi</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Görev / hatırlatma</li>
+                </ul>
+
+                <a class="feature-cta" asp-controller="Home" asp-action="Contact">
+                    Kurguyu konuşalım <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Operations -->
+        <div class="col-12 col-lg-3">
+            <div class="feature-card h-100 p-4 reveal">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="feature-icon">
+                        <i class="bi bi-gear-wide-connected fs-4"></i>
+                    </div>
+                    <span class="badge" style="background:rgba(156,45,45,.10); color:var(--brand); border:1px solid rgba(156,45,45,.20);">
+                        Operasyon
+                    </span>
+                </div>
+
+                <h5 class="fw-bold">Operasyon & Muhasebe Akışı</h5>
+                <p class="text-muted small">
+                    Rezervasyon sonrası süreçleri takip edin: ödemeler, evraklar, tedarikçi ve raporlar.
+                </p>
+
+                <!-- 3 adım akış (tıklanabilir) -->
+                <div class="flow">
+                    <a class="flow-step" href="#m-booking"><i class="bi bi-clipboard-check"></i> Takip</a>
+                    <span class="flow-arrow">→</span>
+                    <a class="flow-step" href="#m-payment"><i class="bi bi-cash-coin"></i> Ödeme/Evrak</a>
+                    <span class="flow-arrow">→</span>
+                    <a class="flow-step" href="#m-reports"><i class="bi bi-bar-chart"></i> Rapor</a>
+                </div>
+
+                <ul class="list-unstyled small mb-3">
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Durum/aksiyon takibi</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Evrak & ödeme kayıtları</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle me-2" style="color:var(--brand)"></i>Raporlama</li>
+                </ul>
+
+                <a class="feature-cta" asp-controller="Home" asp-action="Packages">
+                    Modüllere dön <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5">
+    <div class="feature-band rounded-4 p-4 p-md-5 text-center reveal">
+        <h3 class="fw-bold mb-2">Size uygun paketi birlikte seçelim</h3>
+        <p class="text-muted mb-4">15 dakikalık görüşme ile ihtiyacınızı çıkarıp net bir plan sunalım.</p>
+        <div class="d-flex justify-content-center gap-2">
+            <a class="btn btn-brand btn-lg" asp-action="Demo">Demo Talep</a>
+            <a class="btn btn-outline-secondary btn-lg" asp-action="Contact">İletişim</a>
+        </div>
+    </div>
+</section>

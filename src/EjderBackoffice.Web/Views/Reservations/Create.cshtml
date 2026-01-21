@@ -1,62 +1,76 @@
 @model Ejder.Core.Models.Reservation
 @{
-    var product = ViewBag.Product as Ejder.Core.Models.Product;
+    Layout = "_LayoutBackoffice";
 }
 
-<h1>Rezervasyon Talebi</h1>
+<h2 class="mb-4">Rezervasyon Talebi</h2>
 
-<form method="post">
+<form method="post" class="card p-4 shadow-sm" style="max-width:600px">
 
+    <!-- Hidden alanlar -->
     <input type="hidden" name="ProductId" value="@Model.ProductId" />
     <input type="hidden" name="TourName" value="@Model.TourName" />
     <input type="hidden" id="UnitPrice" value="@Model.UnitPrice" />
 
-    <div class="form-group">
-        <label>Tur</label>
-        <input value="@Model.TourName" disabled />
+    <div class="mb-3">
+        <label class="form-label">Tur</label>
+        <input class="form-control" value="@Model.TourName" disabled />
     </div>
 
-    <div class="form-group">
-        <label>Tur Tarihi</label>
-        <input type="date" name="TourDate"
+    <div class="mb-3">
+        <label class="form-label">Tur Tarihi</label>
+        <input type="date"
+               class="form-control"
+               name="TourDate"
                value="@Model.TourDate?.ToString("yyyy-MM-dd")"
                required />
     </div>
 
-    <div class="form-group">
-        <label>Kişi Sayısı</label>
-        <input type="number" name="PersonCount"
+    <div class="mb-3">
+        <label class="form-label">Kişi Sayısı</label>
+        <input type="number"
+               class="form-control"
+               name="PersonCount"
                id="PersonCount"
-               min="1" value="@Model.PersonCount" required />
+               min="1"
+               value="@Model.PersonCount"
+               required />
     </div>
 
-    <div class="form-group">
-        <label>Ad Soyad</label>
-        <input name="CustomerName" required />
+    <div class="mb-3">
+        <label class="form-label">Ad Soyad</label>
+        <input class="form-control" name="CustomerName" required />
     </div>
 
-    <div class="form-group">
-        <label>Telefon</label>
-        <input name="Phone" required />
+    <div class="mb-3">
+        <label class="form-label">Telefon</label>
+        <input class="form-control" name="Phone" required />
     </div>
 
-    <div class="price-box">
-        <span>Toplam Tutar:</span>
-        <b id="TotalPrice">₺ @Model.UnitPrice?.ToString("N0")</b>
+    <div class="alert alert-light border d-flex justify-content-between">
+        <span>Toplam Tutar</span>
+        <strong id="TotalPrice">₺ 0</strong>
     </div>
 
-    <button type="submit" class="btn primary">
+    <button type="submit" class="btn btn-brand w-100">
         Talep Gönder
     </button>
 </form>
 
+@section Scripts {
 <script>
     const unitPrice = parseFloat(document.getElementById("UnitPrice").value);
     const personInput = document.getElementById("PersonCount");
     const totalPriceEl = document.getElementById("TotalPrice");
 
     function updateTotal() {
-        const count = parseInt(personInput.value || 1);
+        const count = parseInt(personInput.value);
+
+        if (isNaN(unitPrice) || isNaN(count)) {
+            totalPriceEl.innerText = "₺ —";
+            return;
+        }
+
         const total = unitPrice * count;
         totalPriceEl.innerText = "₺ " + total.toLocaleString("tr-TR");
     }
@@ -64,3 +78,4 @@
     personInput.addEventListener("input", updateTotal);
     updateTotal();
 </script>
+}

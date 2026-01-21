@@ -1,3 +1,8 @@
+<div style="background:red;color:white;padding:10px">
+    LAYOUT BACKOFFICE ÇALIŞIYOR
+</div>
+
+
 @using Microsoft.AspNetCore.Http
 <!DOCTYPE html>
 <html lang="tr">
@@ -6,55 +11,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Ejder Backoffice</title>
 
+    <!-- Bootstrap (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+    <!-- Senin CSS -->
     <link rel="stylesheet" href="~/css/backoffice.css" asp-append-version="true" />
 </head>
+
 <body>
-    <div class="bo-shell">
-        <aside class="bo-sidebar">
-            <div class="bo-brand">
-                <div class="bo-logo">E</div>
-                <div>
-                    <div class="bo-brand-title">Ejder</div>
-                    <div class="bo-brand-sub">Backoffice</div>
-                </div>
+
+<div class="bo-shell" id="boShell">
+    <aside class="bo-sidebar" id="boSidebar">
+        <div class="bo-brand">
+            <div class="bo-logo">E</div>
+            <div class="bo-brand-text">
+                <div class="bo-brand-title">Ejder</div>
+                <div class="bo-brand-sub">Backoffice</div>
+            </div>
+        </div>
+
+        <nav class="bo-nav">
+            <a class="bo-nav-item" href="/Dashboard">Dashboard</a>
+            <a class="bo-nav-item" href="/Reservations">Rezervasyonlar</a>
+            <a class="bo-nav-item" href="/Products">Turlar</a>
+            <a class="bo-nav-item" href="#">Müşteriler</a>
+            <a class="bo-nav-item" href="#">Finans</a>
+            <a class="bo-nav-item" href="#">Ayarlar</a>
+        </nav>
+    </aside>
+
+    <main class="bo-main">
+        <header class="bo-topbar">
+            <div class="bo-topbar-left">
+                <button class="bo-menu-btn bo-menu-btn-desktop" id="boMenuDesktopBtn" type="button">☰</button>
+                <button class="bo-menu-btn bo-menu-btn-mobile" id="boMenuMobileBtn" type="button">☰</button>
+                <div class="bo-topbar-title">@ViewData["Title"]</div>
             </div>
 
-            <nav class="bo-nav">
-                <a class="bo-nav-item" href="/Dashboard">Dashboard</a>
-                <a class="bo-nav-item" href="/Reservations">Rezervasyonlar</a>
-                <a class="bo-nav-item" href="/Products">Turlar</a>
-                <a class="bo-nav-item" href="#">Müşteriler</a>
-                <a class="bo-nav-item" href="#">Finans</a>
-                <a class="bo-nav-item" href="#">Ayarlar</a>
-            </nav>
-        </aside>
+            <div class="bo-user">
+                <span class="bo-user-name">@User.Identity?.Name</span>
+                <a class="bo-logout" href="/Auth/Logout">Çıkış</a>
+            </div>
+        </header>
 
-        <main class="bo-main">
-            <header class="bo-topbar">
-                <div class="bo-topbar-title">@ViewData["Title"]</div>
+        <div class="bo-overlay" id="boOverlay"></div>
 
-                <div class="bo-user">
-                    <span class="bo-user-name">@User.Identity?.Name</span>
-                    <a class="bo-logout" href="/Auth/Logout">Çıkış</a>
-                </div>
-            </header>
+        <section class="bo-content">
+            @RenderBody()
+        </section>
+    </main>
+</div>
 
-            <section class="bo-content">
-                @RenderBody()
-            </section>
-        </main>
-    </div>
-    <script>
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(a => {
-                a.style.transition = "opacity .4s ease, transform .4s ease";
-                a.style.opacity = "0";
-                a.style.transform = "translateY(-6px)";
-                setTimeout(() => a.remove(), 400);
-            });
-        }, 3000);
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+(function () {
+    const shell = document.getElementById('boShell');
+    const sidebar = document.getElementById('boSidebar');
+    const btnDesktop = document.getElementById('boMenuDesktopBtn');
+    const btnMobile = document.getElementById('boMenuMobileBtn');
+    const overlay = document.getElementById('boOverlay');
+
+    if (!shell || !sidebar) return;
+
+    if (localStorage.getItem('bo_sidebar_collapsed') === '1') {
+        shell.classList.add('bo-collapsed');
+    }
+
+    btnDesktop?.addEventListener('click', () => {
+        shell.classList.toggle('bo-collapsed');
+        localStorage.setItem('bo_sidebar_collapsed', shell.classList.contains('bo-collapsed') ? '1' : '0');
+    });
+
+    const openMobile = () => shell.classList.add('bo-mobile-open');
+    const closeMobile = () => shell.classList.remove('bo-mobile-open');
+
+    btnMobile?.addEventListener('click', () => {
+        shell.classList.contains('bo-mobile-open') ? closeMobile() : openMobile();
+    });
+
+    overlay?.addEventListener('click', closeMobile);
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeMobile();
+    });
+
+    sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobile));
+})();
+</script>
+
 @RenderSection("Scripts", required: false)
-
 </body>
+
 </html>
