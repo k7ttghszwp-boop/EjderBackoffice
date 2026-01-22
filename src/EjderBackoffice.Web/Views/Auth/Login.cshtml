@@ -1,6 +1,7 @@
 @{
-    Layout = null; // ✅ En garanti: hiçbir layout karışmasın
+    Layout = null; // En garanti: hiçbir layout karışmasın
     ViewData["Title"] = "Giriş Yap";
+    var returnUrl = (string?)ViewBag.ReturnUrl ?? Context.Request.Query["ReturnUrl"].ToString();
 }
 
 <!DOCTYPE html>
@@ -24,17 +25,24 @@
             <div class="login-error">@ViewBag.Error</div>
         }
 
-        <form method="post">
-            <input type="hidden" name="returnUrl" value="@Context.Request.Query["ReturnUrl"]" />
+        <form method="post" action="/Auth/Login" autocomplete="on">
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
 
             <div class="login-field">
-                <label>Kullanıcı Adı</label>
-                <input type="text" name="username" autocomplete="username" />
+                <label>E-posta</label>
+                <input type="text"
+                       name="username"
+                       autocomplete="username"
+                       required
+                       placeholder="admin@ejderturizm.com.tr" />
             </div>
 
             <div class="login-field">
                 <label>Şifre</label>
-                <input type="password" name="password" autocomplete="current-password" />
+                <input type="password"
+                       name="password"
+                       autocomplete="current-password"
+                       required />
             </div>
 
             <button class="login-btn" type="submit">Giriş Yap</button>

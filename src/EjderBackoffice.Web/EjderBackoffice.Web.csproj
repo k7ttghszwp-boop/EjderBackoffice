@@ -22,6 +22,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ejder.Core\Ejder.Core.csproj" />
+    <ProjectReference Include="..\Ejder.Application\Ejder.Application.csproj" />
+    <ProjectReference Include="..\Ejder.Infrastructure\Ejder.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ejder.Domain\Ejder.Domain.csproj" />
   </ItemGroup>
 
 </Project>
