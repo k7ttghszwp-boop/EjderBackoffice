@@ -1,86 +1,103 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using Ejder.Application.Products.Services;
+using Ejder.Application.Products.Dtos;
+
+using Ejder.Application.Tours.Services;
+using Ejder.Domain.Tours;
+
+// Ürün bilgisini ViewBag.Product için şimdilik Core’dan alıyoruz.
+// (PR4+’ta bunu da Application/Domain’a taşıyabiliriz.)
 using Ejder.Core.Repositories;
-using Ejder.Core.Models;
 
 namespace EjderBackoffice.Web.Controllers;
 
 [Authorize]
 public class ProductsController : Controller
 {
-    // 📌 Tur listesi
+    private readonly IProductService _productService;
+    private readonly ITourProgramService _tourProgramService;
+    private readonly ITourDocumentService _tourDocumentService;
+
+    public ProductsController(
+        IProductService productService,
+        ITourProgramService tourProgramService,
+        ITourDocumentService tourDocumentService)
+    {
+        _productService = productService;
+        _tourProgramService = tourProgramService;
+        _tourDocumentService = tourDocumentService;
+    }
+
+    // =====================================================
+    // ✅ PRODUCTS (LIST / CREATE)  -> Application Layer
+    // =====================================================
+
     public IActionResult Index()
     {
-        var products = ProductRepository.GetAll();
+        var products = _productService.GetAll();
         return View(products);
     }
 
-    // 📌 Yeni tur (GET)
     public IActionResult Create()
     {
-        return View(new Product());
+        return View(new ProductCreateDto());
     }
 
-    // 📌 Yeni tur (POST)
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(Product model)
+    public IActionResult Create(ProductCreateDto model)
     {
         if (!ModelState.IsValid)
             return View(model);
 
-        ProductRepository.Add(model);
+        _productService.Create(model);
 
         TempData["Success"] = "Tur başarıyla eklendi ✅";
-        return RedirectToAction("Index");
+        return RedirectToAction(nameof(Index));
     }
 
     // =====================================================
-    // 🔽 TUR PROGRAMI (GÜN GÜN)
+    // ✅ TUR PROGRAMI (GÜN GÜN) -> Application Layer
     // =====================================================
 
-    // 📌 Program yönetimi
     public IActionResult Program(int id)
     {
-        var product = ProductRepository.GetAll()
-            .FirstOrDefault(x => x.Id == id);
-
-        if (product == null)
-            return NotFound();
+        // Şimdilik sadece başlık göstermek için Core ProductRepository
+        var product = ProductRepository.GetAll().FirstOrDefault(x => x.Id == id);
+        if (product == null) return NotFound();
 
         ViewBag.Product = product;
-        var days = TourProgramRepository.GetByProduct(id);
 
+        var days = _tourProgramService.GetByProduct(id);
         return View(days);
     }
 
-    // 📌 Gün ekle
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult AddDay(TourProgramDay model)
     {
         if (!ModelState.IsValid)
-            return RedirectToAction("Program", new { id = model.ProductId });
+            return RedirectToAction(nameof(Program), new { id = model.ProductId });
 
-        TourProgramRepository.Add(model);
+        _tourProgramService.AddDay(model);
 
         TempData["Success"] = "Program günü eklendi ✅";
-        return RedirectToAction("Program", new { id = model.ProductId });
+        return RedirectToAction(nameof(Program), new { id = model.ProductId });
     }
 
     // =====================================================
-    // 🔽 TUR DOKÜMANI (PDF)
+    // ✅ TUR DOKÜMANI (PDF) -> Application Layer
     // =====================================================
 
-    // 📌 PDF yönetimi
     public IActionResult Documents(int id)
     {
         ViewBag.ProductId = id;
-        var doc = TourDocumentRepository.GetByProduct(id);
+        var doc = _tourDocumentService.GetByProduct(id);
         return View(doc);
     }
 
-    // 📌 PDF yükleme
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult UploadPdf(int productId, IFormFile file)
@@ -88,7 +105,7 @@ public class ProductsController : Controller
         if (file == null || file.Length == 0)
         {
             TempData["Error"] = "Lütfen bir PDF dosyası seçin.";
-            return RedirectToAction("Documents", new { id = productId });
+            return RedirectToAction(nameof(Documents), new { id = productId });
         }
 
         var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "docs");
@@ -102,7 +119,7 @@ public class ProductsController : Controller
             file.CopyTo(stream);
         }
 
-        TourDocumentRepository.Save(new TourDocument
+        _tourDocumentService.Save(new TourDocument
         {
             ProductId = productId,
             FileName = file.FileName,
@@ -110,6 +127,6 @@ public class ProductsController : Controller
         });
 
         TempData["Success"] = "PDF başarıyla yüklendi ✅";
-        return RedirectToAction("Documents", new { id = productId });
+        return RedirectToAction(nameof(Documents), new { id = productId });
     }
 }
