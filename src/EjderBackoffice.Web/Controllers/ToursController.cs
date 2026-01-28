@@ -1,29 +1,42 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ejder.Core.Repositories;
-using Ejder.Core.Models;
+
+using Ejder.Application.Products.Services;
+using Ejder.Application.Products.Dtos;
 
 namespace EjderBackoffice.Web.Controllers;
 
+[Authorize]
 public class ToursController : Controller
 {
+    private readonly IProductService _productService;
+
+    public ToursController(IProductService productService)
+    {
+        _productService = productService;
+    }
+
     public IActionResult Index()
     {
-        var tours = ProductRepository.GetAll();
+        var tours = _productService.GetAll();
         return View(tours);
     }
 
     public IActionResult Create()
     {
-        return View();
+        return View(new ProductCreateDto());
     }
 
     [HttpPost]
-    public IActionResult Create(Product model)
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(ProductCreateDto model)
     {
         if (!ModelState.IsValid)
             return View(model);
 
-        ProductRepository.Add(model);
-        return RedirectToAction("Index");
+        _productService.Create(model);
+        TempData["Success"] = "Tur başarıyla eklendi ✅";
+
+        return RedirectToAction(nameof(Index));
     }
 }

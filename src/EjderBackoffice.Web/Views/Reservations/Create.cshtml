@@ -1,4 +1,4 @@
-@model Ejder.Core.Models.Reservation
+@model Ejder.Application.Reservations.Dtos.ReservationCreateDto
 @{
     Layout = "_LayoutBackoffice";
 }
@@ -7,7 +7,7 @@
 
 <form method="post" class="card p-4 shadow-sm" style="max-width:600px">
 
-    <!-- Hidden alanlar -->
+    <!-- Hidden -->
     <input type="hidden" name="ProductId" value="@Model.ProductId" />
     <input type="hidden" name="TourName" value="@Model.TourName" />
     <input type="hidden" id="UnitPrice" value="@Model.UnitPrice" />
@@ -22,7 +22,7 @@
         <input type="date"
                class="form-control"
                name="TourDate"
-               value="@Model.TourDate?.ToString("yyyy-MM-dd")"
+               value="@(Model.TourDate?.ToString("yyyy-MM-dd"))"
                required />
     </div>
 
@@ -33,18 +33,18 @@
                name="PersonCount"
                id="PersonCount"
                min="1"
-               value="@Model.PersonCount"
+               value="@(Model.PersonCount ?? 1)"
                required />
     </div>
 
     <div class="mb-3">
         <label class="form-label">Ad Soyad</label>
-        <input class="form-control" name="CustomerName" required />
+        <input class="form-control" name="CustomerName" value="@Model.CustomerName" required />
     </div>
 
     <div class="mb-3">
         <label class="form-label">Telefon</label>
-        <input class="form-control" name="Phone" required />
+        <input class="form-control" name="Phone" value="@Model.Phone" required />
     </div>
 
     <div class="alert alert-light border d-flex justify-content-between">

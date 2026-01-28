@@ -1,31 +1,40 @@
-@model IEnumerable<Ejder.Core.Models.Product>
+@model IEnumerable<Ejder.Domain.Products.Product>
 @{
     Layout = "_LayoutBackoffice";
     ViewData["Title"] = "Turlar";
 }
 
-<h2>Turlar</h2>
+<h2 class="mb-3">Turlar</h2>
 
-<a href="/Products/Create" class="btn btn-primary">+ Yeni Tur</a>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Ad</th>
-            <th>Süre</th>
-            <th>Fiyat</th>
-            <th>Slug</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var p in Model)
-    {
-        <tr>
-            <td>@p.Name</td>
-            <td>@p.DurationDays Gün</td>
-            <td>₺ @p.Price.ToString("N0")</td>
-            <td>@p.Slug</td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Ad</th>
+                    <th>Süre</th>
+                    <th>Fiyat</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (Model == null || !Model.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center text-muted py-4">Henüz tur eklenmemiş.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.Name</strong></td>
+                        <td>@item.Days gün</td>
+                        <td>₺ @item.Price.ToString("N0")</td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

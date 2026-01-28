@@ -1,20 +1,24 @@
-using Ejder.Core.Models;
+using Ejder.Domain.Reservations;
 
 namespace EjderBackoffice.Web.Extensions;
 
 public static class ReservationStatusExtensions
 {
-    public static string ToText(this ReservationStatus s) => s switch
+    public static string ToBadgeClass(this ReservationStatus status) => status switch
     {
-        ReservationStatus.Onaylandi => "Onaylandı",
-        ReservationStatus.Iptal => "İptal",
-        _ => "Yeni"
+        ReservationStatus.Pending => "badge bg-warning text-dark",
+        ReservationStatus.Approved => "badge bg-success",
+        ReservationStatus.Rejected => "badge bg-danger",
+        ReservationStatus.Cancelled => "badge bg-secondary",
+        _ => "badge bg-light text-dark"
     };
 
-    public static string ToBadgeClass(this ReservationStatus s) => s switch
+    public static string ToDisplay(this ReservationStatus status) => status switch
     {
-        ReservationStatus.Onaylandi => "badge badge-green",
-        ReservationStatus.Iptal => "badge badge-red",
-        _ => "badge badge-yellow"
+        ReservationStatus.Pending => "Bekliyor",
+        ReservationStatus.Approved => "Onaylandı",
+        ReservationStatus.Rejected => "Reddedildi",
+        ReservationStatus.Cancelled => "İptal",
+        _ => status.ToString()
     };
 }

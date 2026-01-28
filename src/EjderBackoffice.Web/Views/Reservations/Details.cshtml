@@ -1,25 +1,10 @@
-@model Ejder.Core.Models.Reservation
-@using Ejder.Core.Models
+@model Ejder.Domain.Reservations.Reservation
+@using Ejder.Domain.Reservations
+@using EjderBackoffice.Web.Extensions
 
 @{
     Layout = "_LayoutBackoffice";
     ViewData["Title"] = "Rezervasyon Detay";
-}
-
-@functions{
-    string StatusText(ReservationStatus s) => s switch
-    {
-        ReservationStatus.Onaylandi => "Onaylandı",
-        ReservationStatus.Iptal => "İptal",
-        _ => "Yeni"
-    };
-
-    string StatusClass(ReservationStatus s) => s switch
-    {
-        ReservationStatus.Onaylandi => "badge badge-green",
-        ReservationStatus.Iptal => "badge badge-red",
-        _ => "badge badge-yellow"
-    };
 }
 
 @if (TempData["Success"] is string msg)
@@ -56,8 +41,8 @@
         </div>
         <div class="card-foot">
             Durum:
-            <span class="@StatusClass(Model.Status)">
-                @StatusText(Model.Status)
+            <span class="@Model.Status.ToBadgeClass()">
+                @Model.Status.ToDisplay()
             </span>
         </div>
     </div>
@@ -80,9 +65,7 @@
     <div class="card">
         <div class="card-title">Tutar</div>
         <div class="card-value">
-            ₺ @(Model.AmountTry.HasValue
-                ? Model.AmountTry.Value.ToString("N0")
-                : "-")
+            ₺ @Model.AmountTry.ToString("N0")
         </div>
         <div class="card-foot">Para Birimi: TRY</div>
     </div>
@@ -102,7 +85,7 @@
                 @foreach (ReservationStatus s in Enum.GetValues(typeof(ReservationStatus)))
                 {
                     <option value="@s" selected="@(s == Model.Status)">
-                        @StatusText(s)
+                        @s.ToDisplay()
                     </option>
                 }
             </select>
@@ -110,7 +93,7 @@
             <script>
                 function confirmStatusChange() {
                     const val = document.getElementById("statusSelect").value;
-                    if (val === "Iptal") {
+                    if (val === "Cancelled") {
                         return confirm("Rezervasyon iptal edilecek. Emin misiniz?");
                     }
                     return true;

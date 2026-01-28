@@ -1,4 +1,4 @@
-@model Ejder.Core.Models.Product
+@model Ejder.Application.Products.Dtos.ProductCreateDto
 @{
     Layout = "_LayoutBackoffice";
 }
@@ -15,7 +15,7 @@
 
         <div class="col-md-3">
             <label class="form-label">Süre (Gün)</label>
-            <input name="Duration" class="form-control" type="number" min="1" required />
+            <input name="Days" class="form-control" type="number" min="1" required />
         </div>
 
         <div class="col-md-3">

@@ -7,10 +7,6 @@ using Ejder.Application.Products.Dtos;
 using Ejder.Application.Tours.Services;
 using Ejder.Domain.Tours;
 
-// Ürün bilgisini ViewBag.Product için şimdilik Core’dan alıyoruz.
-// (PR4+’ta bunu da Application/Domain’a taşıyabiliriz.)
-using Ejder.Core.Repositories;
-
 namespace EjderBackoffice.Web.Controllers;
 
 [Authorize]
@@ -30,10 +26,7 @@ public class ProductsController : Controller
         _tourDocumentService = tourDocumentService;
     }
 
-    // =====================================================
-    // ✅ PRODUCTS (LIST / CREATE)  -> Application Layer
-    // =====================================================
-
+    // ✅ PRODUCTS (LIST / CREATE)
     public IActionResult Index()
     {
         var products = _productService.GetAll();
@@ -58,15 +51,12 @@ public class ProductsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // =====================================================
-    // ✅ TUR PROGRAMI (GÜN GÜN) -> Application Layer
-    // =====================================================
-
+    // ✅ PROGRAM (Tours Services)
     public IActionResult Program(int id)
     {
-        // Şimdilik sadece başlık göstermek için Core ProductRepository
-        var product = ProductRepository.GetAll().FirstOrDefault(x => x.Id == id);
-        if (product == null) return NotFound();
+        var product = _productService.GetById(id);
+        if (product == null)
+            return NotFound();
 
         ViewBag.Product = product;
 
@@ -81,16 +71,13 @@ public class ProductsController : Controller
         if (!ModelState.IsValid)
             return RedirectToAction(nameof(Program), new { id = model.ProductId });
 
-        _tourProgramService.AddDay(model);
+        _tourProgramService.Add(model);
 
         TempData["Success"] = "Program günü eklendi ✅";
         return RedirectToAction(nameof(Program), new { id = model.ProductId });
     }
 
-    // =====================================================
-    // ✅ TUR DOKÜMANI (PDF) -> Application Layer
-    // =====================================================
-
+    // ✅ DOCUMENTS (Tours Services)
     public IActionResult Documents(int id)
     {
         ViewBag.ProductId = id;

@@ -6,4 +6,5 @@ public interface ITourProgramService
 {
     List<TourProgramDay> GetByProduct(int productId);
     void AddDay(TourProgramDay day);
+    void Add(TourProgramDay day);
 }

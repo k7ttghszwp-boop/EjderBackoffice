@@ -17,4 +17,11 @@ public class TourProgramService : ITourProgramService
         day.Id = _days.Count == 0 ? 1 : _days.Max(x => x.Id) + 1;
         _days.Add(day);
     }
+    public void Add(TourProgramDay day)
+    {
+        // basic guard
+        if (day.DayNumber <= 0) day.DayNumber = 1;
+
+        _days.Add(day);
+    }
 }

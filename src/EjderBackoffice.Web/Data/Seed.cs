@@ -1,3 +1,5 @@
+using Ejder.Infrastructure.Persistence;
+using Ejder.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,16 +9,14 @@ public static class Seed
 {
     public static async Task EnsureAdminAsync(IServiceProvider services)
     {
-        using var scope = services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var db = services.GetRequiredService<AppDbContext>();
 
-        // DB ve migration
         await db.Database.MigrateAsync();
 
         var email = "admin@ejderturizm.com.tr";
 
-        var exists = await db.BackofficeUsers.AnyAsync(x => x.Email == email);
-        if (exists) return;
+        if (await db.BackofficeUsers.AnyAsync(x => x.Email == email))
+            return;
 
         var hasher = new PasswordHasher<BackofficeUser>();
 

@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+
 using Ejder.Infrastructure.Persistence;
-using Ejder.Application.Products.Services;
 using EjderBackoffice.Web.Authorization;
+
+using Ejder.Application.Products.Services;
 using Ejder.Application.Tours.Services;
+using Ejder.Application.Reservations.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +24,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
     });
 });
+
+// --------------------
+// Application Services
+// --------------------
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ITourProgramService, TourProgramService>();
 builder.Services.AddScoped<ITourDocumentService, TourDocumentService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 
 // Cookie Auth
 builder.Services
@@ -41,20 +50,12 @@ builder.Services
             : CookieSecurePolicy.Always;
     });
 
-
 builder.Services.AddAuthorization(options =>
 {
-    // Rol bazlı direkt kullanacaksın: [Authorize(Roles="Admin")]
-
-    // İstersen policy ile daha okunur:
     options.AddPolicy("CanSeeFinance", p => p.RequireRole(Roles.Admin, Roles.Finance));
     options.AddPolicy("CanSeeOps",     p => p.RequireRole(Roles.Admin, Roles.Ops));
     options.AddPolicy("CanSeeSales",   p => p.RequireRole(Roles.Admin, Roles.Sales));
 });
-
-
-// Application Services
-builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
