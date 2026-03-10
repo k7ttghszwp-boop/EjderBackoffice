@@ -1,7 +1,7 @@
 using Ejder.Infrastructure.Persistence;
 using Ejder.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BC = BCrypt.Net.BCrypt;
 
 namespace EjderBackoffice.Web.Data;
 
@@ -15,21 +15,22 @@ public static class Seed
 
         var email = "admin@ejderturizm.com.tr";
 
-        if (await db.BackofficeUsers.AnyAsync(x => x.Email == email))
-            return;
-
-        var hasher = new PasswordHasher<BackofficeUser>();
-
-        var user = new BackofficeUser
+        var user = await db.BackofficeUsers.FirstOrDefaultAsync(x => x.Email == email);
+        if (user == null)
         {
-            Email = email,
-            Role = "Admin",
-            IsActive = true
-        };
+            user = new BackofficeUser
+            {
+                Email = email,
+                Role = "Admin",
+                IsActive = true
+            };
 
-        user.PasswordHash = hasher.HashPassword(user, "Ejder4818+");
+            db.BackofficeUsers.Add(user);
+        }
 
-        db.BackofficeUsers.Add(user);
+        // Parolayı her seferinde BCrypt ile güncelle
+        user.PasswordHash = BC.HashPassword("Ejder4818+");
+
         await db.SaveChangesAsync();
     }
 }

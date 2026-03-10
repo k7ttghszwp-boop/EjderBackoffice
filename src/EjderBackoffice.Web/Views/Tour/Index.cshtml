@@ -1,0 +1,137 @@
+@model IEnumerable<Ejder.Application.Tours.DTOs.TourListDto>
+@{
+    ViewData["Title"] = "Tur Yönetimi";
+    Layout = "_LayoutBackoffice";
+}
+
+<div class="ej-page-title">
+    <div>
+        <h1 class="fw-semibold">Tur Yönetimi</h1>
+        <div class="ej-page-subtitle d-none d-md-block">OPERASYONEL TUR KATALOĞU</div>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn ej-btn-primary btn-sm d-flex align-items-center gap-2">
+            <i class="fa-solid fa-plus"></i>
+            <span>Yeni Tur Ekle</span>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-lg-6">
+        <div class="ej-card">
+            <form asp-action="Index" method="get" class="row g-2 align-items-end">
+                <div class="col-12 col-md-6">
+                    <label class="ej-form-label mb-1">Kategori</label>
+                    <select name="categoryId" class="form-select form-select-sm" asp-items="ViewBag.Categories">
+                        <option value="">Tüm Kategoriler</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="ej-form-label mb-1">Durum</label>
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="">Tümü</option>
+                        <option value="active">Aktif</option>
+                        <option value="passive">Pasif</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-2 d-flex gap-1">
+                    <button type="submit" class="btn btn-sm ej-btn-primary w-100">
+                        <i class="fa-solid fa-filter"></i>
+                    </button>
+                    @if (Context.Request.Query.ContainsKey("categoryId") || Context.Request.Query.ContainsKey("status"))
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-outline-secondary w-100">
+                            <i class="fa-solid fa-xmark"></i>
+                        </a>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="ej-table-card">
+    <div class="ej-table-title-row">
+        <div class="ej-table-title">
+            <i class="fa-solid fa-route me-2"></i>Tur Listesi
+        </div>
+        <div class="ej-table-actions">
+            <span class="badge bg-primary bg-opacity-10 text-primary d-none d-md-inline">TOUR_MANAGEMENT // ACTIVE_EXPEDITIONS</span>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle ej-data-table js-ej-datatable" data-order-col="4" data-order-dir="desc">
+            <thead>
+                <tr>
+                    <th>Resim</th>
+                    <th>Tur Adı (TR)</th>
+                    <th>Kategori</th>
+                    <th>Fiyat</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="row-@item.Id">
+                        <td style="width: 80px;">
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.jpg" : item.ImageUrl)"
+                                 class="img-thumbnail rounded-3"
+                                 style="width: 60px; height: 40px; object-fit: cover; border: 1px solid rgba(0,0,0,0.05);" />
+                        </td>
+                        <td>
+                            <div class="fw-semibold">@item.Name_TR</div>
+                            <div class="text-muted small">@item.Name_EN</div>
+                        </td>
+                        <td>@item.CategoryName_TR</td>
+                        <td>
+                            @item.Price.ToString("C2")
+                            @if (item.DiscountedPrice.HasValue)
+                            {
+                                <br />
+                                <small class="text-success fw-bold">İnd: @item.DiscountedPrice.Value.ToString("C2")</small>
+                            }
+                        </td>
+                        <td>
+                            <small>@item.StartDate.ToString("dd.MM.yyyy")</small><br />
+                            <small>@item.EndDate.ToString("dd.MM.yyyy")</small>
+                        </td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="ej-badge-status active">[ACTIVE]</span>
+                            }
+                            else
+                            {
+                                <span class="ej-badge-status passive">[PASSIVE]</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Düzenle">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <button type="button"
+                                        class="btn btn-outline-danger js-ej-delete"
+                                        data-delete-url="/Tour/Delete/@item.Id"
+                                        data-row-id="row-@item.Id"
+                                        title="Sil">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Sayfaya özel ekstra JS gerekirse buraya eklenebilir.
+         DataTables ve silme onayı global ejder-app.js tarafından yönetilir. -->
+}

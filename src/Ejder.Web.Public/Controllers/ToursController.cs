@@ -1,41 +1,69 @@
 using Microsoft.AspNetCore.Mvc;
-using Ejder.Web.Public.Models;
+using System.Text.Json;
+using Ejder.Application.Tours.DTOs;
+using Ejder.Application.Categories.DTOs;
+using Ejder.Application.Tours.Queries;
 
 namespace Ejder.Web.Public.Controllers;
 
 public class ToursController : Controller
 {
-    public IActionResult Index()
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConfiguration _configuration;
+    private readonly string _apiUrl;
+
+    public ToursController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
-        var tours = TourRepository.GetAll();
-        return View(tours);
+        _httpClientFactory = httpClientFactory;
+        _configuration = configuration;
+        _apiUrl = _configuration["ApiSettings:BaseUrl"];
     }
 
-    public IActionResult Detail(int id)
+    [Route("{lang}/tours")]
+    [Route("tours")]
+    public async Task<IActionResult> Index(string lang = "tr", int page = 1, Guid? categoryId = null)
     {
-        var tour = TourRepository.GetById(id);
-        if (tour == null) return NotFound();
+        ViewBag.Lang = lang;
+        var client = _httpClientFactory.CreateClient();
 
-        return View(tour);
-    }
-
-    [HttpPost]
-    public IActionResult RequestTour(int id, int tourDateId, string fullName, string phone, string email, int pax, string note)
-    {
-        var tour = TourRepository.GetById(id);
-        if (tour == null) return NotFound();
-
-        var date = tour.Dates.FirstOrDefault(x => x.Id == tourDateId);
-        if (date == null)
+        // Kategorileri çek (Filtre için)
+        var catResponse = await client.GetAsync($"{_apiUrl}categories");
+        if (catResponse.IsSuccessStatusCode)
         {
-            TempData["Ok"] = null;
-            TempData["Err"] = "Lütfen geçerli bir tur tarihi seçin.";
-            return RedirectToAction(nameof(Detail), new { id });
+            var catContent = await catResponse.Content.ReadAsStringAsync();
+            var categories = JsonSerializer.Deserialize<List<CategoryDto>>(catContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            ViewBag.Categories = categories;
         }
 
-        // MVP: şimdilik sadece mesaj
-        TempData["Ok"] = $"Talebiniz alındı. Seçilen tarih: {date.RangeText}. Ekibimiz sizi arayacak.";
+        // Turları çek (Paged/Filtered)
+        var tourResponse = await client.GetAsync($"{_apiUrl}tours/paged?page={page}&pageSize=6&categoryId={categoryId}");
+        if (tourResponse.IsSuccessStatusCode)
+        {
+            var tourContent = await tourResponse.Content.ReadAsStringAsync();
+            var pagedResult = JsonSerializer.Deserialize<PagedResult<TourListDto>>(tourContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            ViewBag.CurrentPage = page;
+            ViewBag.CategoryId = categoryId;
+            return View(pagedResult);
+        }
 
-        return RedirectToAction(nameof(Detail), new { id });
+        return View(new PagedResult<TourListDto>());
+    }
+
+    [Route("{lang}/tours/{id}")]
+    [Route("tours/{id}")]
+    public async Task<IActionResult> Detail(Guid id, string lang = "tr")
+    {
+        ViewBag.Lang = lang;
+        var client = _httpClientFactory.CreateClient();
+        
+        var response = await client.GetAsync($"{_apiUrl}tours/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            var tour = JsonSerializer.Deserialize<TourDto>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return View(tour);
+        }
+
+        return NotFound();
     }
 }

@@ -1,8 +1,8 @@
 namespace Ejder.Domain.Tours;
+using Ejder.Domain;
 
-public class TourProgramDay
+public class TourProgramDay : BaseEntity
 {
-    public int Id { get; set; }          // şimdilik
     public int ProductId { get; set; }
     public int DayNumber { get; set; }
     public string Title { get; set; } = "";

@@ -1,9 +1,8 @@
 namespace Ejder.Domain.Entities;
+using Ejder.Domain;
 
-public class BackofficeUser
+public class BackofficeUser : BaseEntity
 {
-    public int Id { get; set; }
-
     public string Email { get; set; } = string.Empty;
 
     // Seed bunu set ediyor

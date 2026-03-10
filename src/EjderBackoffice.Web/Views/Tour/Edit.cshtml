@@ -1,0 +1,151 @@
+@model Ejder.Application.Tours.DTOs.UpdateTourDto
+@{
+    ViewData["Title"] = "Turu Düzenle";
+    Layout = "_LayoutBackoffice";
+}
+
+<div class="ej-page-title">
+    <div>
+        <h1 class="fw-semibold text-uppercase">MODIFY_EXPEDITION_PARAMETERS</h1>
+        <div class="ej-page-subtitle">Mevcut tur üzerinde değişiklik yapın</div>
+    </div>
+</div>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <div class="row g-3">
+        <div class="col-12 col-lg-8">
+            <div class="ej-form-card mb-3">
+                <div class="ej-form-card-header">
+                    <span class="text-uppercase" style="letter-spacing: 0.16em; font-size: 0.8rem;">İçerik / Content</span>
+                </div>
+                <div class="ej-form-card-body">
+                    <ul class="nav nav-tabs mb-3" id="tourTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="tr-tab" data-bs-toggle="tab" data-bs-target="#tr-content" type="button">Türkçe</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="en-tab" data-bs-toggle="tab" data-bs-target="#en-content" type="button">English</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tr-content">
+                            <div class="mb-3">
+                                <label class="ej-form-label mb-1">Tur Adı (TR)</label>
+                                <input asp-for="Name_TR" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="ej-form-label mb-1">Kısa Açıklama (TR)</label>
+                                <textarea asp-for="ShortDescription_TR" class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="ej-form-label mb-1">Detaylı Açıklama (TR)</label>
+                                <textarea asp-for="Description_TR" class="form-control editor" rows="5"></textarea>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="en-content">
+                            <div class="mb-3">
+                                <label class="ej-form-label mb-1">Tour Name (EN)</label>
+                                <input asp-for="Name_EN" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="ej-form-label mb-1">Short Description (EN)</label>
+                                <textarea asp-for="ShortDescription_EN" class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="ej-form-label mb-1">Detailed Description (EN)</label>
+                                <textarea asp-for="Description_EN" class="form-control editor" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="ej-form-card mb-3">
+                <div class="ej-form-card-header">
+                    <span class="text-uppercase" style="letter-spacing: 0.16em; font-size: 0.8rem;">Yayınlama &amp; Ayarlar</span>
+                </div>
+                <div class="ej-form-card-body">
+                    <div class="mb-3">
+                        <label class="ej-form-label mb-1">Kategori</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories" required>
+                            <option value="">Seçiniz...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="ej-form-label mb-1">Fiyat (₺)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₺</span>
+                            <input asp-for="Price" type="number" step="0.01" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="ej-form-label mb-1">İndirimli Fiyat (₺)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₺</span>
+                            <input asp-for="DiscountedPrice" type="number" step="0.01" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="ej-form-label mb-1">Kontenjan</label>
+                        <input asp-for="MaxParticipants" type="number" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="ej-form-label mb-1">Başlangıç Tarihi</label>
+                        <input asp-for="StartDate" type="text" class="form-control datepicker" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="ej-form-label mb-1">Bitiş Tarihi</label>
+                        <input asp-for="EndDate" type="text" class="form-control datepicker" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch">
+                        <label class="form-check-label ej-form-label mb-0" style="letter-spacing: 0.08em;">Aktif mi?</label>
+                    </div>
+                    <hr />
+                    <div class="mb-3">
+                        <label class="ej-form-label mb-1 d-block">Tur Resmi</label>
+                        <div class="image-preview border rounded bg-light mb-2" style="height: 150px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <img id="preview" src="@(string.IsNullOrEmpty(Model.ExistingImageUrl) ? "/images/placeholder-img.jpg" : Model.ExistingImageUrl)" style="max-width: 100%; max-height: 100%;" />
+                        </div>
+                        <input asp-for="ImageFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" onchange="previewImage(this)" />
+                        <small class="text-muted d-block mt-1">Aynı kalması için boş bırakın</small>
+                    </div>
+                    <hr />
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn ej-btn-primary">
+                            <i class="fa-solid fa-arrow-rotate-right me-1"></i> UPDATE
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            ABORT
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            flatpickr(".datepicker", {
+                locale: "tr",
+                dateFormat: "Y-m-d"
+            });
+        });
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

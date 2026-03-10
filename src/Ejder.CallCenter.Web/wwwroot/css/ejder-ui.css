@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+/* 
+   EJDER DESIGN SYSTEM v2.0
+   Shared Design Tokens & Utilities
+*/
+
+:root {
+    /* Primary Palette */
+    --ejder-black: #000000;
+    --ejder-white: #ffffff;
+    --ejder-grey-100: #f5f5f5;
+    --ejder-grey-200: #eeeeee;
+    --ejder-grey-300: #e0e0e0;
+    --ejder-grey-400: #bdbdbd;
+    --ejder-grey-500: #9e9e9e;
+    --ejder-grey-600: #757575;
+    --ejder-grey-700: #616161;
+    --ejder-grey-800: #424242;
+    --ejder-grey-900: #212121;
+    --ejder-dark: #0a0a0a;
+
+    /* Semantic Tokens */
+    --bg-main: var(--ejder-black);
+    --bg-surface: var(--ejder-dark);
+    --text-main: var(--ejder-white);
+    --text-muted: var(--ejder-grey-600);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --accent: var(--ejder-white);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-thick: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --blur-std: blur(15px);
+    --blur-heavy: blur(30px);
+
+    /* Typography */
+    --font-primary: 'Outfit', sans-serif;
+
+    /* Layout */
+    --sidebar-width: 280px;
+    --topbar-height: 80px;
+}
+
+/* Base resets for Ejder Apps */
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-primary);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Shared Components & Utilities */
+
+/* Glass Utility */
+.ej-glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--blur-std);
+    border: 1px solid var(--glass-border);
+}
+
+.ej-glass-thick {
+    background: var(--glass-bg-thick);
+    backdrop-filter: var(--blur-heavy);
+    border: 1px solid var(--glass-border);
+}
+
+/* Buttons */
+.btn-ejder {
+    background: var(--ejder-white);
+    color: var(--ejder-black);
+    border: none;
+    border-radius: 0px;
+    /* Luxury square look */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 12px 24px;
+    font-size: 0.75rem;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.btn-ejder:hover {
+    background: var(--ejder-grey-300);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.btn-ejder-outline {
+    background: transparent;
+    color: var(--ejder-white);
+    border: 1px solid var(--ejder-white);
+    border-radius: 0px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 12px 24px;
+    font-size: 0.75rem;
+    transition: all 0.4s;
+}
+
+.btn-ejder-outline:hover {
+    background: var(--ejder-white);
+    color: var(--ejder-black);
+}
+
+/* Cards */
+.ej-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+    padding: 2rem;
+    transition: border-color 0.3s ease;
+}
+
+.ej-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Typography Helpers */
+.text-tracking {
+    letter-spacing: 3px;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.text-small {
+    font-size: 0.75rem;
+}
+
+/* Animations */
+.fade-up {
+    animation: fadeUpAnime 0.8s ease forwards;
+}
+
+@keyframes fadeUpAnime {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

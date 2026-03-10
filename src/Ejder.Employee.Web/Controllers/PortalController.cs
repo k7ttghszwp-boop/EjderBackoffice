@@ -1,11 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Ejder.Core.HR;
+using Ejder.Domain.HR;
+using Ejder.Domain.Repositories;
 
 namespace Ejder.Employee.Web.Controllers;
 
 public class PortalController : Controller
 {
+    private readonly IEmployeeRepository _employeeRepo;
+    private readonly IAttendanceRepository _attendanceRepo;
+
+    public PortalController(IEmployeeRepository employeeRepo, IAttendanceRepository attendanceRepo)
+    {
+        _employeeRepo = employeeRepo;
+        _attendanceRepo = attendanceRepo;
+    }
+
     // =====================================================
     // LOGIN
     // =====================================================
@@ -15,10 +25,9 @@ public class PortalController : Controller
     }
 
     [HttpPost]
-    public IActionResult Login(string email, string password)
+    public async Task<IActionResult> Login(string email, string password)
     {
-        // MVP: EmployeeRepository (şimdilik sadece email ile)
-        var user = EmployeeRepository.Login(email, password);
+        var user = await _employeeRepo.LoginAsync(email, password);
 
         if (user != null)
         {
@@ -35,14 +44,14 @@ public class PortalController : Controller
     // =====================================================
     // DASHBOARD
     // =====================================================
-    public IActionResult Dashboard()
+    public async Task<IActionResult> Dashboard()
     {
         var id = GetEmployeeId();
         if (id == null)
             return RedirectToAction(nameof(Login));
 
         ViewBag.EmployeeName = HttpContext.Session.GetString("EmployeeName");
-        ViewBag.Today = AttendanceRepository.GetToday(id.Value);
+        ViewBag.Today = await _attendanceRepo.GetTodayByEmployeeIdAsync(id.Value);
 
         return View();
     }
@@ -50,25 +59,25 @@ public class PortalController : Controller
     // =====================================================
     // YÖNETİCİ
     // =====================================================
-    public IActionResult Yonetici()
+    public async Task<IActionResult> Yonetici()
     {
         var id = GetEmployeeId();
         if (id == null)
             return RedirectToAction(nameof(Login));
 
-        // Manager görsün (Resul = Manager)
-        if (!IsManager(id.Value))
+        if (!await IsManager(id.Value))
             return RedirectToAction(nameof(Dashboard));
 
         ViewBag.EmployeeName = HttpContext.Session.GetString("EmployeeName");
-        ViewBag.TodayAll = AttendanceRepository.GetTodayAll();
+        ViewBag.TodayAll = await _attendanceRepo.GetTodayAllAsync();
+        ViewBag.Employees = await _employeeRepo.GetAllAsync();
 
         return View();
     }
 
-    private bool IsManager(int employeeId)
+    private async Task<bool> IsManager(int employeeId)
     {
-        var emp = EmployeeRepository.GetById(employeeId);
+        var emp = await _employeeRepo.GetByIdAsync(employeeId);
         return emp?.Role == EmployeeRole.Manager;
     }
 
@@ -76,21 +85,47 @@ public class PortalController : Controller
     // GİRİŞ / ÇIKIŞ
     // =====================================================
     [HttpPost]
-    public IActionResult CheckIn()
+    public async Task<IActionResult> CheckIn()
     {
         var id = GetEmployeeId();
         if (id != null)
-            AttendanceRepository.CheckIn(id.Value);
+        {
+            var attendance = await _attendanceRepo.GetTodayByEmployeeIdAsync(id.Value);
+            if (attendance == null)
+            {
+                attendance = new Attendance
+                {
+                    EmployeeId = id.Value,
+                    Date = DateTime.Today,
+                    CheckIn = DateTime.Now
+                };
+                await _attendanceRepo.AddAsync(attendance);
+            }
+            else if (attendance.CheckIn == null)
+            {
+                attendance.CheckIn = DateTime.Now;
+                _attendanceRepo.Update(attendance);
+            }
+            await _attendanceRepo.SaveChangesAsync();
+        }
 
         return RedirectToAction(nameof(Dashboard));
     }
 
     [HttpPost]
-    public IActionResult CheckOut()
+    public async Task<IActionResult> CheckOut()
     {
         var id = GetEmployeeId();
         if (id != null)
-            AttendanceRepository.CheckOut(id.Value);
+        {
+            var attendance = await _attendanceRepo.GetTodayByEmployeeIdAsync(id.Value);
+            if (attendance != null && attendance.CheckOut == null)
+            {
+                attendance.CheckOut = DateTime.Now;
+                _attendanceRepo.Update(attendance);
+                await _attendanceRepo.SaveChangesAsync();
+            }
+        }
 
         return RedirectToAction(nameof(Dashboard));
     }
@@ -112,3 +147,4 @@ public class PortalController : Controller
         return HttpContext.Session.GetInt32("EmployeeId");
     }
 }
+

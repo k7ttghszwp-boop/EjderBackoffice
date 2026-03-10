@@ -1,0 +1,58 @@
+@model Ejder.Application.Categories.DTOs.UpdateCategoryDto
+@{
+    ViewData["Title"] = "Kategoriyi Düzenle";
+    Layout = "_LayoutBackoffice";
+}
+
+<div class="ej-page-title">
+    <div>
+        <h1 class="fw-semibold">Kategoriyi Düzenle</h1>
+        <div class="ej-page-subtitle">CATEGORY_EDIT // MODIFY_CLASS</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="ej-form-card">
+            <div class="ej-form-card-header">
+                <span class="text-uppercase" style="letter-spacing: 0.16em; font-size: 0.8rem;">Kategori Parametreleri</span>
+            </div>
+            <div class="ej-form-card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name_TR" class="ej-form-label mb-1">Kategori Adı (Türkçe)</label>
+                        <input asp-for="Name_TR" class="form-control" required />
+                        <span asp-validation-for="Name_TR" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name_EN" class="ej-form-label mb-1">Category Name (English)</label>
+                        <input asp-for="Name_EN" class="form-control" required />
+                        <span asp-validation-for="Name_EN" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label ej-form-label mb-0" style="letter-spacing: 0.08em;">Kategori Aktif mi?</label>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn ej-btn-primary">
+                            <i class="fa-solid fa-save me-1"></i> Güncelle
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            Geri Dön
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

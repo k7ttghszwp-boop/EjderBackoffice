@@ -3,9 +3,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Ejder.Application\Ejder.Application.csproj" />
     <ProjectReference Include="..\Ejder.Domain\Ejder.Domain.csproj" />
+    <ProjectReference Include="..\Ejder.Core\Ejder.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+    <PackageReference Include="MailKit" Version="4.15.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

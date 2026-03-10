@@ -1,0 +1,917 @@
+/* ============================================================
+   EJDER BACKOFFICE THEME SYSTEM
+   - Light theme: "Ejder Merkez"
+   - Dark theme : "Command Dashboard"
+   ============================================================ */
+
+/* ─────────────────────────────────────────────────────────────
+   1. THEME VARIABLES
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+    /* Light theme (Ejder Merkez) */
+    --primary: #2E86C1;
+    --primary-dark: #1A5276;
+    --primary-light: #EBF5FB;
+    --success: #27AE60;
+    --warning: #F39C12;
+    --danger: #E74C3C;
+
+    --bg-page: #F4F6F7;
+    --bg-card: #FFFFFF;
+    --bg-sidebar: #FFFFFF;
+    --bg-header: #2E86C1;
+
+    --text-primary: #2C3E50;
+    --text-muted: #7F8C8D;
+    --text-header: #FFFFFF;
+
+    --border-color: #D5DBDB;
+    --sidebar-hover: #EBF5FB;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+
+    --font-sans: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    --font-mono: "Share Tech Mono", "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --header-height: 60px;
+    --sidebar-width-light: 60px;
+    --sidebar-width-dark: 200px;
+
+    --transition-fast: all 0.2s ease-out;
+    --transition-normal: all 0.3s ease;
+}
+
+[data-theme="dark"] {
+    /* Dark theme (Command Dashboard) */
+    --primary: #FFFFFF;
+    --primary-dark: #CCCCCC;
+    --primary-light: #1A1A1A;
+    --success: #00FF88;
+    --warning: #FFB800;
+    --danger: #FF4444;
+
+    --bg-page: #0A0A0A;
+    --bg-card: #111111;
+    --bg-sidebar: #0D0D0D;
+    --bg-header: #000000;
+
+    --text-primary: #FFFFFF;
+    --text-muted: #666666;
+    --text-header: #FFFFFF;
+
+    --border-color: #222222;
+    --sidebar-hover: #1A1A1A;
+    --shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+}
+
+/* Smooth theme transition */
+html,
+body,
+.ej-header,
+.ej-sidebar,
+.ej-main,
+.ej-card,
+.ej-stat-card,
+.ej-terminal-card {
+    transition: var(--transition-normal);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2. GLOBAL LAYOUT
+   ───────────────────────────────────────────────────────────── */
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    margin: 0;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+}
+
+[data-theme="dark"] body {
+    font-family: var(--font-mono);
+}
+
+.ej-shell {
+    display: grid;
+    grid-template-columns: var(--sidebar-width-light) minmax(0, 1fr);
+    grid-template-rows: var(--header-height) minmax(0, 1fr);
+    grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+    min-height: 100vh;
+    background-color: var(--bg-page);
+}
+
+[data-theme="dark"] .ej-shell {
+    grid-template-columns: var(--sidebar-width-dark) minmax(0, 1fr);
+}
+
+.ej-header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    background-color: var(--bg-header);
+    color: var(--text-header);
+    box-shadow: var(--shadow);
+    z-index: 20;
+}
+
+.ej-header-left,
+.ej-header-center,
+.ej-header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ej-logo {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    color: var(--text-header);
+    text-decoration: none;
+}
+
+.ej-logo-main {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+}
+
+.ej-logo-sub {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+.ej-header-quick {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 0.35rem 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-header);
+    text-decoration: none;
+    background: transparent;
+}
+
+.ej-header-quick:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.ej-header-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.78rem;
+}
+
+.ej-header-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.ej-pill {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 0.15rem 0.55rem;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.ej-header-icon {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.ej-header-icon:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.ej-user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ej-user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+}
+
+.ej-theme-toggle {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: transparent;
+    color: var(--text-header);
+    padding: 0.2rem 0.85rem;
+    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+}
+
+.ej-theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.ej-sidebar {
+    grid-area: sidebar;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+}
+
+.ej-main {
+    grid-area: main;
+    padding: 1.5rem 1.75rem;
+}
+
+/* Light: collapsed icon-only sidebar */
+.ej-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.ej-sidebar-item {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition-fast);
+}
+
+.ej-sidebar-item i {
+    font-size: 1.1rem;
+}
+
+.ej-sidebar-item:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--primary);
+}
+
+.ej-sidebar-item.ej-active {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+.ej-sidebar-tooltip {
+    position: absolute;
+    left: 52px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--primary);
+    color: #ffffff;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-fast);
+}
+
+.ej-sidebar-item:hover .ej-sidebar-tooltip {
+    opacity: 1;
+}
+
+.ej-sidebar-footer {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.ej-sidebar-terminate {
+    font-size: 0.7rem;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    color: var(--danger);
+    opacity: 0.8;
+    text-decoration: none;
+    letter-spacing: 0.2em;
+}
+
+/* Dark: expanded sidebar with text labels */
+[data-theme="dark"] .ej-sidebar {
+    padding-inline: 1rem;
+}
+
+[data-theme="dark"] .ej-sidebar-nav {
+    align-items: stretch;
+}
+
+/* Varsayılan (light) modda label ve grup başlıklarını gizle,
+   sadece ikonlar görünsün */
+.ej-sidebar-label,
+.ej-sidebar-group-title {
+    display: none;
+}
+
+[data-theme="dark"] .ej-sidebar-item {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding-inline: 0.75rem;
+    border-radius: 6px;
+}
+
+[data-theme="dark"] .ej-sidebar-item i {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .ej-sidebar-label {
+    display: inline;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+}
+
+[data-theme="dark"] .ej-sidebar-group-title {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    margin: 1rem 0 0.25rem 0.25rem;
+}
+
+[data-theme="dark"] .ej-sidebar-item:hover {
+    background-color: var(--sidebar-hover);
+}
+
+[data-theme="dark"] .ej-sidebar-item.ej-active {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+[data-theme="dark"] .ej-sidebar-item.ej-active i {
+    color: #000000;
+}
+
+[data-theme="dark"] .ej-sidebar-terminate {
+    writing-mode: horizontal-tb;
+    transform: none;
+}
+
+/* Main content container */
+.ej-main-inner {
+    background-color: transparent;
+    min-height: calc(100vh - var(--header-height) - 3rem);
+}
+
+.ej-page-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+}
+
+.ej-page-title h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.ej-page-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+}
+
+/* Dashboard variants: show/hide per theme */
+.ej-dashboard-light {
+    display: block;
+}
+
+.ej-dashboard-dark {
+    display: none;
+}
+
+[data-theme="dark"] .ej-dashboard-light {
+    display: none;
+}
+
+[data-theme="dark"] .ej-dashboard-dark {
+    display: block;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3. CARDS & DASHBOARD WIDGETS
+   ───────────────────────────────────────────────────────────── */
+
+.ej-card {
+    background-color: var(--bg-card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+[data-theme="dark"] .ej-card {
+    border-radius: 0;
+}
+
+.ej-stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.ej-stat-card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1.1rem 1.2rem;
+    box-shadow: var(--shadow);
+}
+
+.ej-stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.ej-stat-value {
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.ej-stat-meta {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+.ej-badge-delta {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+}
+
+.ej-badge-delta.success {
+    background-color: rgba(39, 174, 96, 0.1);
+    color: #1E8449;
+}
+
+.ej-badge-delta.warning {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: #AF601A;
+}
+
+/* Terminal-style cards for dark mode */
+.ej-terminal-card {
+    background-color: var(--bg-card);
+    border-radius: 0;
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+}
+
+.ej-terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.ej-terminal-title {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.82rem;
+}
+
+.ej-terminal-stream {
+    background-color: #050505;
+    border-radius: 0;
+    border: 1px solid #222222;
+    padding: 1rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    min-height: 140px;
+}
+
+.ej-status-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ej-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0;
+    border-bottom: 1px dashed var(--border-color);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+}
+
+.ej-status-item:last-child {
+    border-bottom: none;
+}
+
+.ej-status-key {
+    opacity: 0.8;
+}
+
+.ej-status-value {
+    font-weight: 600;
+}
+
+.ej-status-badge-online {
+    color: var(--success);
+}
+
+.ej-status-badge-ready {
+    color: var(--success);
+}
+
+.ej-status-badge-idle {
+    color: var(--warning);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   4. TABLES & DATATABLES
+   ───────────────────────────────────────────────────────────── */
+
+.ej-table-card {
+    background-color: var(--bg-card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    padding: 1rem 1.25rem 0.75rem 1.25rem;
+}
+
+.ej-table-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.ej-table-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.ej-table-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ej-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.ej-data-table thead {
+    background-color: var(--primary-light);
+}
+
+.ej-data-table thead th {
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 0.6rem;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
+}
+
+.ej-data-table tbody td {
+    padding: 0.6rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ej-data-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .ej-data-table thead {
+    background-color: #ffffff;
+}
+
+[data-theme="dark"] .ej-data-table thead th {
+    color: #000000;
+}
+
+[data-theme="dark"] .ej-data-table tbody tr:hover {
+    background-color: #151515;
+}
+
+.ej-badge-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+}
+
+.ej-badge-status.active {
+    background-color: rgba(39, 174, 96, 0.1);
+    color: #1E8449;
+}
+
+.ej-badge-status.passive {
+    background-color: rgba(231, 76, 60, 0.12);
+    color: #922B21;
+}
+
+[data-theme="dark"] .ej-badge-status.active {
+    background-color: rgba(0, 255, 136, 0.12);
+    color: var(--success);
+}
+
+[data-theme="dark"] .ej-badge-status.passive {
+    background-color: rgba(255, 68, 68, 0.12);
+    color: var(--danger);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   5. FORMS & BUTTONS
+   ───────────────────────────────────────────────────────────── */
+
+.ej-form-card {
+    background-color: var(--bg-card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.ej-form-card-header {
+    padding: 0.9rem 1.3rem;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(to right, var(--primary), var(--primary-dark));
+    color: #ffffff;
+}
+
+.ej-form-card-body {
+    padding: 1.25rem 1.5rem 1.4rem 1.5rem;
+}
+
+.ej-form-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+}
+
+.ej-btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary-dark);
+    color: #ffffff;
+}
+
+.ej-btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.ej-btn-outline {
+    background-color: transparent;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.ej-btn-outline:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+[data-theme="dark"] .ej-btn-primary {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+
+[data-theme="dark"] .ej-btn-primary:hover {
+    background-color: #f0f0f0;
+    color: #000000;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   6. ANIMATIONS & TERMINAL EFFECTS
+   ───────────────────────────────────────────────────────────── */
+
+.ej-fade-in {
+    animation: ej-fade-in 0.4s ease-out;
+}
+
+@keyframes ej-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.terminal-text {
+    font-family: var(--font-mono);
+}
+
+.blink {
+    animation: ej-blink 1s steps(2, start) infinite;
+}
+
+@keyframes ej-blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+.scan-line {
+    position: relative;
+    overflow: hidden;
+}
+
+.scan-line::after {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(0, 255, 136, 0.05), transparent);
+    animation: scan-move 4s linear infinite;
+}
+
+@keyframes scan-move {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(220%);
+    }
+}
+
+/* INBOUND scanning dots */
+.scanning-dots::after {
+    content: "...";
+    display: inline-block;
+    animation: dots 1.4s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% {
+        content: "";
+    }
+
+    40% {
+        content: ".";
+    }
+
+    60% {
+        content: "..";
+    }
+
+    80%, 100% {
+        content: "...";
+    }
+}
+
+/* Status pulse */
+.status-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background-color: var(--success);
+    box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.6);
+    animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.6);
+    }
+
+    70% {
+        transform: scale(1.3);
+        box-shadow: 0 0 0 10px rgba(0, 255, 136, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 255, 136, 0);
+    }
+}
+
+/* Matrix background for dark login */
+.matrix-bg {
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(0, 255, 136, 0.07) 1px, transparent 0);
+    background-size: 24px 24px;
+    opacity: 0.45;
+    animation: matrix-drift 20s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes matrix-drift {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+        transform: translate3d(-40px, -80px, 0);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   7. RESPONSIVE
+   ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+    .ej-shell {
+        grid-template-columns: 56px minmax(0, 1fr);
+    }
+
+    [data-theme="dark"] .ej-shell {
+        grid-template-columns: 56px minmax(0, 1fr);
+    }
+
+    [data-theme="dark"] .ej-sidebar-nav {
+        align-items: center;
+    }
+
+    [data-theme="dark"] .ej-sidebar-item {
+        width: 44px;
+        justify-content: center;
+    }
+
+    [data-theme="dark"] .ej-sidebar-label,
+    [data-theme="dark"] .ej-sidebar-group-title {
+        display: none;
+    }
+
+    .ej-main {
+        padding: 1.25rem;
+    }
+
+    .ej-stat-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .ej-header-center {
+        display: none;
+    }
+
+    .ej-header-right {
+        gap: 0.4rem;
+    }
+
+    .ej-page-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .ej-stat-row {
+        grid-template-columns: 1fr;
+    }
+}
+

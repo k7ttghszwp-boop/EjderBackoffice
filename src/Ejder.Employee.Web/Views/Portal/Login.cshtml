@@ -1,38 +1,49 @@
 @{
-    ViewData["Title"] = "Giriş";
+    ViewData["Title"] = "TERMINAL_AUTH";
     Layout = "_Layout";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center py-5">
     <div class="col-12 col-md-6 col-lg-4">
-        <div class="card shadow-soft">
-            <div class="card-body p-4">
-                <h4 class="mb-1">Personel Girişi</h4>
-                <div class="text-muted mb-3">Devam etmek için giriş yap.</div>
+        <div class="card bg-black border border-secondary border-opacity-25 rounded-0">
+            <div class="card-body p-5">
+                <div class="mb-5">
+                    <h1 class="fw-bold tracking-tight text-white m-0 fs-4">OPERATOR_LOGIN</h1>
+                    <div class="small text-muted tracking-widest mt-2">TERMINAL_V2 // ACCESS_RESTRICTED</div>
+                </div>
 
                 @if (ViewBag.Error != null)
                 {
-                    <div class="alert alert-danger">@ViewBag.Error</div>
+                    <div class="alert bg-white text-black rounded-0 border-0 mb-4 py-2 small fw-bold tracking-widest">
+                        [ERROR] AUTH_DENIED: @ViewBag.Error
+                    </div>
                 }
 
                 <form method="post" asp-controller="Portal" asp-action="Login">
-                    <div class="mb-3">
-                        <label class="form-label">E-posta</label>
-                        <input name="email" type="email" class="form-control" placeholder="personel@ejder.com" required>
+                    <div class="mb-4">
+                        <label class="small text-muted text-uppercase tracking-widest mb-2 d-block">Vector_Email</label>
+                        <input name="email" type="email" class="form-control bg-transparent border-0 border-bottom border-secondary border-opacity-50 text-white rounded-0 px-0 py-2" placeholder="ID@EJDER.CORE" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Şifre</label>
-                        <input name="password" type="password" class="form-control" placeholder="••••" required>
+                    <div class="mb-5">
+                        <label class="small text-muted text-uppercase tracking-widest mb-2 d-block">Access_Key</label>
+                        <input name="password" type="password" class="form-control bg-transparent border-0 border-bottom border-secondary border-opacity-50 text-white rounded-0 px-0 py-2" placeholder="••••" required>
                     </div>
 
-                    <button class="btn btn-success w-100">Giriş Yap</button>
+                    <button class="btn btn-white w-100 rounded-0 py-3 fw-bold tracking-widest text-uppercase" style="background:white; color:black;">Initialize_Session</button>
 
-                    <div class="small text-muted mt-3">
-                        Demo: <strong>personel@ejder.com</strong> / <strong>1234</strong>
+                    <div class="mt-4 pt-3 border-top border-secondary border-opacity-10">
+                        <div class="opacity-25 x-small tracking-widest" style="font-size: 8px;">
+                            CREDENTIAL_HINT: admin@ejder.com / 1234
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .btn-white:hover { background: #e0e0e0 !important; }
+    .form-control:focus { background: transparent !important; color: white !important; border-bottom-color: white !important; box-shadow: none !important; }
+</style>

@@ -1,0 +1,75 @@
+@model Ejder.Application.Tours.DTOs.TourDto
+@{
+    ViewData["Title"] = "Tur Detayı";
+    Layout = "_LayoutBackoffice";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h3><i class="fas fa-info-circle"></i> Tur Detayı: @Model.Name_TR</h3>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-3" id="detailTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="tr-tab" data-bs-toggle="tab" data-bs-target="#tr-content" type="button">Türkçe</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="en-tab" data-bs-toggle="tab" data-bs-target="#en-content" type="button">English</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tr-content">
+                            <h4>@Model.Name_TR</h4>
+                            <p class="text-muted">@Model.ShortDescription_TR</p>
+                            <hr />
+                            <div class="mt-3">
+                                @Html.Raw(Model.Description_TR)
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="en-content">
+                            <h4>@Model.Name_EN</h4>
+                            <p class="text-muted">@Model.ShortDescription_EN</p>
+                            <hr />
+                            <div class="mt-3">
+                                @Html.Raw(Model.Description_EN)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4 text-center">
+                <img src="@Model.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;" />
+                <div class="card-body text-start">
+                    <p><strong>Kategori:</strong> @Model.CategoryName_TR</p>
+                    <p><strong>Fiyat:</strong> @Model.Price.ToString("C2")</p>
+                    @if (Model.DiscountedPrice.HasValue)
+                    {
+                        <p><strong>İndirimli:</strong> <span class="text-success">@Model.DiscountedPrice.Value.ToString("C2")</span></p>
+                    }
+                    <p><strong>Tarih:</strong> @Model.StartDate.ToString("dd.MM.yyyy") - @Model.EndDate.ToString("dd.MM.yyyy")</p>
+                    <p><strong>Max Katılımcı:</strong> @Model.MaxParticipants</p>
+                    <p><strong>Durum:</strong> 
+                        @if (Model.IsActive) { <span class="badge bg-success">Aktif</span> }
+                        else { <span class="badge bg-danger">Pasif</span> }
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

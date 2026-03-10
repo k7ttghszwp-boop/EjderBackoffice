@@ -1,6 +1,6 @@
-@using Ejder.Core.HR
+@using Ejder.Domain.HR
 @{
-    ViewData["Title"] = "Yönetici";
+    ViewData["Title"] = "MANAGEMENT_CONTROL";
     Layout = "_Layout";
 
     var list = ViewBag.TodayAll as List<Attendance> ?? new List<Attendance>();
@@ -10,114 +10,92 @@
     int done = list.Count(x => x.CheckIn != null && x.CheckOut != null);
 }
 
-<div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+<div class="d-flex align-items-end justify-content-between mb-5 border-bottom border-secondary border-opacity-25 pb-4">
     <div>
-        <h3 class="mb-1">Yönetici Paneli</h3>
-        <div class="text-muted">Bugünkü personel giriş/çıkış takibi</div>
+        <h1 class="display-5 fw-bold tracking-tight m-0">OPERATIONAL_OVERVIEW</h1>
+        <div class="small text-muted tracking-widest mt-2">REAL-TIME PERSONNEL LOGISTICS // @DateTime.Now.ToString("yyyy-MM-dd HH:mm")</div>
     </div>
-    <span class="badge badge-soft px-3 py-2">
-        Tarih: <strong>@DateTime.Today.ToString("dd.MM.yyyy")</strong>
-    </span>
+    <div class="text-end">
+        <span class="badge border border-white text-white px-3 py-2 rounded-0 small tracking-widest">LIVE_CONNECTION_SECURED</span>
+    </div>
 </div>
 
-<div class="row g-3 mt-3">
-    <div class="col-12 col-md-4">
-        <div class="card shadow-soft">
-            <div class="card-body">
-                <div class="text-muted small">Toplam Kayıt</div>
-                <div class="fs-3 fw-bold">@total</div>
-            </div>
+<div class="row g-0 mb-5 border border-secondary border-opacity-25">
+    <div class="col-12 col-md-4 border-end border-secondary border-opacity-25">
+        <div class="p-5">
+            <div class="small text-muted text-uppercase tracking-widest mb-3">Total Logs</div>
+            <div class="display-3 fw-bold">@total.ToString("00")</div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4 border-end border-secondary border-opacity-25">
+        <div class="p-5">
+            <div class="small text-muted text-uppercase tracking-widest mb-3">Active On-Site</div>
+            <div class="display-3 fw-bold">@inside.ToString("00")</div>
         </div>
     </div>
 
     <div class="col-12 col-md-4">
-        <div class="card shadow-soft">
-            <div class="card-body">
-                <div class="text-muted small">İçeride</div>
-                <div class="fs-3 fw-bold">@inside</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-md-4">
-        <div class="card shadow-soft">
-            <div class="card-body">
-                <div class="text-muted small">Çıkış Yapan</div>
-                <div class="fs-3 fw-bold">@done</div>
-            </div>
+        <div class="p-5">
+            <div class="small text-muted text-uppercase tracking-widest mb-3">Terminated Cycles</div>
+            <div class="display-3 fw-bold">@done.ToString("00")</div>
         </div>
     </div>
 </div>
 
-@* ✅ CANLI DURUM BİLGİSİ *@
-@if (inside > 0)
-{
-    <div class="alert alert-success mt-3 mb-0">
-        Şu anda <strong>@inside</strong> personel içeride.
+<div class="card bg-black border border-secondary border-opacity-25 rounded-0">
+    <div class="card-header bg-white text-black rounded-0 border-0 p-3">
+        <div class="fw-bold text-uppercase tracking-widest small">ACTIVITY_STREAM</div>
     </div>
-}
-else
-{
-    <div class="alert alert-secondary mt-3 mb-0">
-        Şu anda içeride personel yok.
-    </div>
-}
-
-<div class="card shadow-soft mt-4">
-    <div class="card-body">
-        <div class="fw-semibold mb-1">Bugünkü Kayıtlar</div>
-        <div class="text-muted small mb-3">Giriş/çıkış saatleri ve durum</div>
-
+    <div class="card-body p-0">
         @if (!list.Any())
         {
-            <div class="alert alert-info mb-0">Bugün henüz giriş yapan personel yok.</div>
+            <div class="p-5 text-center text-muted opacity-50 tracking-widest">NO_DATA_MATCHES_CURRENT_QUERY</div>
         }
         else
         {
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-dark table-hover m-0 align-middle">
                     <thead>
-                        <tr>
-                            <th>Personel ID</th>
-                            <th>Personel</th>
-                            <th>Giriş</th>
-                            <th>Çıkış</th>
-                            <th>Durum</th>
+                        <tr class="bg-dark bg-opacity-50">
+                            <th class="ps-4 py-3">ID</th>
+                            <th class="py-3">OPERATOR_IDENTITY</th>
+                            <th class="py-3">INITIALIZED</th>
+                            <th class="py-3">TERMINATED</th>
+                            <th class="py-3 pe-4 text-end">STATUS_FLAG</th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach (var item in list.OrderByDescending(x => x.CheckIn))
                     {
-                        var inText = item.CheckIn is DateTime ci ? ci.ToString("HH:mm") : "-";
-                        var outText = item.CheckOut.HasValue ? item.CheckOut.Value.ToString("HH:mm") : "-";
+                        var inText = item.CheckIn is DateTime ci ? ci.ToString("HH:mm") : "00:00";
+                        var outText = item.CheckOut.HasValue ? item.CheckOut.Value.ToString("HH:mm") : "----";
 
                         var isInside = item.CheckOut == null;
-                        var status = isInside ? "İçeride" : "Çıkış yaptı";
-
-                        // ✅ Badge renkleri iyileştirildi:
-                        var badgeClass = isInside ? "bg-success" : "bg-danger";
+                        var status = isInside ? "ACTIVE" : "COMPLETED";
+                        var statusClass = isInside ? "text-white" : "text-muted";
 
                         <tr>
-                            <td class="fw-semibold">@item.EmployeeId</td>
+                            <td class="ps-4 fw-mono opacity-50">#@item.EmployeeId.ToString("000")</td>
                             <td>
-                                <div class="fw-semibold">
+                                <div class="fw-bold">
                                     @{
-                                        var emp = EmployeeRepository.GetById(item.EmployeeId);
-                                        var fullName = emp?.FullName ?? $"Personel #{item.EmployeeId}";
+                                        var employees = ViewBag.Employees as List<Employee> ?? new List<Employee>();
+                                        var emp = employees.FirstOrDefault(x => x.Id == item.EmployeeId);
+                                        var fullName = emp?.FullName ?? $"NODE_{item.EmployeeId}";
                                     }
-                                    @fullName
+                                    @fullName.ToUpper()
                                 </div>
-                                <div class="text-muted small">
-                                    ID: @item.EmployeeId
-                                    @if (emp?.Role != null)
-                                    {
-                                        <span class="ms-2">• @emp.Role</span>
-                                    }
-                                </div>
+                                @if (emp?.Role != null)
+                                {
+                                    <div class="small text-muted tracking-widest" style="font-size: 9px;">@emp.Role.ToUpper()</div>
+                                }
                             </td>
-                            <td class="fw-semibold">@inText</td>
-                            <td class="fw-semibold">@outText</td>
-                            <td><span class="badge @badgeClass">@status</span></td>
+                            <td class="fw-mono">@inText</td>
+                            <td class="fw-mono">@outText</td>
+                            <td class="pe-4 text-end">
+                                <span class="fw-bold tracking-widest @statusClass">[@status]</span>
+                            </td>
                         </tr>
                     }
                     </tbody>
@@ -126,3 +104,10 @@ else
         }
     </div>
 </div>
+
+<style>
+    .fw-mono { font-family: 'Courier New', Courier, monospace; }
+    .display-3 { letter-spacing: -4px; }
+    .table-dark { background-color: transparent !important; }
+    .table-hover tbody tr:hover { background-color: rgba(255,255,255,0.02) !important; }
+</style>

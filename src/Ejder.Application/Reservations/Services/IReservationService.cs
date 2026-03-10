@@ -4,8 +4,8 @@ namespace Ejder.Application.Reservations.Services;
 
 public interface IReservationService
 {
-    IEnumerable<Reservation> GetAll();
-    Reservation? GetById(int id);
-    Reservation Create(Reservation reservation);
-    void UpdateStatus(int id, ReservationStatus status);
+    Task<IEnumerable<Reservation>> GetAllAsync();
+    Task<Reservation?> GetByIdAsync(int id);
+    Task<Reservation> CreateAsync(Reservation reservation);
+    Task UpdateStatusAsync(int id, ReservationStatus status);
 }

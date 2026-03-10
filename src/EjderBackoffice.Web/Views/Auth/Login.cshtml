@@ -1,54 +1,385 @@
 @{
-    Layout = null; // En garanti: hiçbir layout karışmasın
-    ViewData["Title"] = "Giriş Yap";
+    Layout = null;
+    ViewData["Title"] = "AUTHENTICATION";
     var returnUrl = (string?)ViewBag.ReturnUrl ?? Context.Request.Query["ReturnUrl"].ToString();
 }
 
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Ejder Backoffice</title>
+    <title>AUTH - EJDER BACKOFFICE</title>
 
-    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/ejder-theme.css" asp-append-version="true" />
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            transition: var(--transition-normal);
+            position: relative;
+        }
+
+        [data-theme="dark"] body {
+            font-family: var(--font-mono);
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+        }
+
+        .login-shell {
+            width: 100%;
+            max-width: 420px;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-card-light,
+        .login-card-dark {
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            padding: 2.25rem 2.5rem 2rem 2.5rem;
+            background-color: var(--bg-card);
+        }
+
+        .login-card-dark {
+            background-color: #000000;
+            border-radius: 0;
+            border-color: #222222;
+        }
+
+        .login-card-light {
+            background-color: #ffffff;
+        }
+
+        .login-header-light {
+            margin-bottom: 2rem;
+        }
+
+        .login-logo-light-main {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2E86C1;
+        }
+
+        .login-logo-light-sub {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2E86C1;
+        }
+
+        .login-subtitle-light {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        .login-header-dark {
+            margin-bottom: 2.25rem;
+        }
+
+        .login-logo-dark-main {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+        }
+
+        .login-logo-dark-sub {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            color: var(--text-muted);
+        }
+
+        .login-subtitle-dark {
+            font-size: 0.7rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+        }
+
+        .login-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .login-input {
+            border-radius: 0.6rem;
+            padding: 0.75rem 0.9rem;
+        }
+
+        .login-input::placeholder {
+            color: #B3B9BD;
+        }
+
+        [data-theme="dark"] .login-input {
+            background-color: #0A0A0A;
+            border-color: #222222;
+            color: #ffffff;
+        }
+
+        [data-theme="dark"] .login-input::placeholder {
+            color: #777777;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .login-btn-light {
+            width: 100%;
+            background-color: #2E86C1;
+            border-color: #2E86C1;
+            padding: 0.9rem;
+            font-weight: 600;
+        }
+
+        .login-meta-light {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .login-btn-dark {
+            width: 100%;
+            background-color: #ffffff;
+            border-color: #ffffff;
+            color: #000000;
+            padding: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.72rem;
+        }
+
+        .login-btn-dark.loading::after {
+            content: "ING";
+            animation: dots 1.4s steps(4, end) infinite;
+        }
+
+        .login-meta-dark {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 1.3rem;
+            text-align: center;
+        }
+
+        .theme-toggle-login {
+            position: fixed;
+            top: 12px;
+            right: 16px;
+            z-index: 5;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.8rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            font-size: 0.78rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .theme-toggle-login span.icon {
+            font-size: 1rem;
+        }
+
+        .login-error {
+            border-radius: 0.7rem;
+            padding: 0.75rem 0.9rem;
+            font-size: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .matrix-bg-login {
+            display: none;
+        }
+
+        [data-theme="dark"] .matrix-bg-login {
+            display: block;
+        }
+
+        .matrix-bg-login {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle at 1px 1px, rgba(0, 255, 136, 0.07) 1px, transparent 0);
+            background-size: 24px 24px;
+            opacity: 0.45;
+            animation: matrix-drift 20s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @@keyframes dots {
+            0%, 20% { content: ""; }
+            40% { content: "."; }
+            60% { content: ".."; }
+            80%, 100% { content: "..."; }
+        }
+
+        @@keyframes matrix-drift {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-40px, -80px, 0); }
+        }
+    </style>
 </head>
 <body>
 
-<div class="login-wrap">
-    <div class="login-card">
-        <h2 class="login-title">Ejder Backoffice</h2>
-        <div class="login-sub">Lütfen giriş yapın</div>
+<button id="loginThemeToggle" type="button" class="btn btn-sm theme-toggle-login">
+    <span class="icon">🌙</span>
+    <span class="label">Dark Mod</span>
+</button>
+
+<div class="matrix-bg-login"></div>
+
+<div class="login-shell">
+    <div class="login-card-light" id="loginCardLight">
+        <div class="login-header-light text-center">
+            <div class="login-logo-light-main">Ejder</div>
+            <div class="login-logo-light-sub">Merkez</div>
+            <div class="login-subtitle-light">ejdertur Acenta Sistemine Hoş Geldiniz</div>
+        </div>
 
         @if (!string.IsNullOrWhiteSpace(ViewBag.Error as string))
         {
-            <div class="login-error">@ViewBag.Error</div>
+            <div class="alert alert-danger login-error mb-3">
+                <strong>Giriş başarısız.</strong> @ViewBag.Error
+            </div>
         }
 
         <form method="post" action="/Auth/Login" autocomplete="on">
             <input type="hidden" name="returnUrl" value="@returnUrl" />
 
-            <div class="login-field">
-                <label>E-posta</label>
-                <input type="text"
-                       name="username"
-                       autocomplete="username"
-                       required
-                       placeholder="admin@ejderturizm.com.tr" />
+            <div class="mb-3">
+                <label class="login-label">Kullanıcı / E-posta</label>
+                <input type="text" name="username" class="form-control login-input" placeholder="operator@ejderturizm.com.tr" required />
             </div>
 
-            <div class="login-field">
-                <label>Şifre</label>
-                <input type="password"
-                       name="password"
-                       autocomplete="current-password"
-                       required />
+            <div class="mb-2">
+                <label class="login-label">Şifre</label>
+                <input type="password" name="password" class="form-control login-input" placeholder="••••••••" required />
             </div>
 
-            <button class="login-btn" type="submit">Giriş Yap</button>
+            <button type="submit" class="btn btn-primary login-btn-light mt-3">
+                Giriş Yap
+            </button>
+
+            <div class="login-meta-light">
+                Versiyon: BACKOFFICE v2.0.0
+            </div>
+        </form>
+    </div>
+
+    <div class="login-card-dark d-none text-white" id="loginCardDark">
+        <div class="login-header-dark">
+            <div class="login-logo-dark-main">EJDER</div>
+            <div class="login-logo-dark-sub">BACKOFFICE</div>
+            <div class="login-subtitle-dark">AUTHENTICATION_REQUIRED</div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(ViewBag.Error as string))
+        {
+            <div class="alert alert-danger login-error mb-3">
+                <span class="terminal-text">[!] AUTH_FAILURE: @ViewBag.Error</span>
+            </div>
+        }
+
+        <form method="post" action="/Auth/Login" autocomplete="on" id="loginFormDark">
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+            <div class="mb-3">
+                <label class="login-label">USER_IDENTIFIER</label>
+                <input type="text" name="username" class="form-control login-input terminal-text" placeholder="OPERATOR / EMAIL" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="login-label">ACCESS_KEY</label>
+                <input type="password" name="password" class="form-control login-input terminal-text" placeholder="********" required />
+            </div>
+
+            <button type="submit" class="btn login-btn-dark mt-2" id="loginBtnDark">
+                AUTHENTICATE
+            </button>
+
+            <div class="login-meta-dark terminal-text mt-3">
+                SYSTEM_VERSION: 02.B
+            </div>
         </form>
     </div>
 </div>
+
+<script>
+    (function () {
+        const THEME_KEY = "ejder-theme";
+
+        function getSavedTheme() {
+            const stored = window.localStorage.getItem(THEME_KEY);
+            if (stored === "dark" || stored === "light") return stored;
+            return "light";
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            window.localStorage.setItem(THEME_KEY, theme);
+
+            const btn = document.getElementById("loginThemeToggle");
+            const lightCard = document.getElementById("loginCardLight");
+            const darkCard = document.getElementById("loginCardDark");
+
+            if (!btn || !lightCard || !darkCard) return;
+
+            if (theme === "dark") {
+                btn.querySelector(".icon").textContent = "☀️";
+                btn.querySelector(".label").textContent = "Light Mod";
+                lightCard.classList.add("d-none");
+                darkCard.classList.remove("d-none");
+            } else {
+                btn.querySelector(".icon").textContent = "🌙";
+                btn.querySelector(".label").textContent = "Dark Mod";
+                darkCard.classList.add("d-none");
+                lightCard.classList.remove("d-none");
+            }
+        }
+
+        const initial = getSavedTheme();
+        applyTheme(initial);
+
+        const toggleBtn = document.getElementById("loginThemeToggle");
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", function () {
+                const current = document.documentElement.getAttribute("data-theme") || "light";
+                const next = current === "light" ? "dark" : "light";
+                applyTheme(next);
+            });
+        }
+
+        const loginBtnDark = document.getElementById("loginBtnDark");
+        const loginFormDark = document.getElementById("loginFormDark");
+        if (loginBtnDark && loginFormDark) {
+            loginFormDark.addEventListener("submit", function () {
+                loginBtnDark.textContent = "AUTHENTICAT";
+                loginBtnDark.classList.add("loading");
+            });
+        }
+    })();
+</script>
 
 </body>
 </html>

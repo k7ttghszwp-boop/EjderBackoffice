@@ -5,7 +5,7 @@ namespace Ejder.Application.Products.Services;
 
 public interface IProductService
 {
-    List<Product> GetAll();
-    Product? GetById(int id);
-    Product Create(ProductCreateDto dto);
+    Task<IEnumerable<Product>> GetAllAsync();
+    Task<Product?> GetByIdAsync(int id);
+    Task<Product> CreateAsync(ProductCreateDto dto);
 }

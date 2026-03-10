@@ -1,34 +1,59 @@
-@model IEnumerable<Ejder.Core.Models.Reservation>
+@model IEnumerable<Ejder.Domain.Reservations.Reservation>
+@{
+    ViewData["Title"] = "PIPELINE_INCOMING";
+}
 
-<h1>📞 Call Center – Lead Listesi</h1>
+<div class="d-flex align-items-end justify-content-between mb-5 border-bottom border-secondary border-opacity-25 pb-4">
+    <div>
+        <h1 class="display-5 fw-bold tracking-tight m-0">INCOMING_LEADS</h1>
+        <div class="small text-muted tracking-widest mt-2">ACTIVE_TRANSMISSIONS // QUEUE_STABLE</div>
+    </div>
+    <div class="text-end">
+        <span class="badge border border-white text-white px-3 py-2 rounded-0 small tracking-widest">ENCRYPTED_OPS_FEED</span>
+    </div>
+</div>
 
-<table style="width:100%; border-collapse:collapse;">
-    <thead>
-        <tr>
-            <th>Müşteri</th>
-            <th>Telefon</th>
-            <th>Tur</th>
-            <th>Kişi</th>
-            <th>Tarih</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var l in Model)
-    {
-        <tr style="border-top:1px solid #eee;">
-            <td>@l.CustomerName</td>
-            <td>@l.Phone</td>
-            <td>@l.TourName</td>
-            <td>@l.PersonCount</td>
-            <td>@l.TourDate?.ToString("dd.MM.yyyy")</td>
-            <td>
-                <a href="tel:@l.Phone"
-                   style="padding:6px 10px; background:#111; color:#fff; text-decoration:none;">
-                    Ara 📞
-                </a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="card bg-black border border-secondary border-opacity-25 rounded-0 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-dark table-hover m-0 align-middle">
+            <thead>
+                <tr class="bg-dark bg-opacity-50 border-bottom border-secondary border-opacity-50">
+                    <th class="ps-4 py-3 tracking-widest small opacity-50">SUBJECT_IDENTITY</th>
+                    <th class="py-3 tracking-widest small opacity-50">CONTACT_VECTOR</th>
+                    <th class="py-3 tracking-widest small opacity-50">OBJECTIVE</th>
+                    <th class="py-3 tracking-widest small opacity-50">UNITS</th>
+                    <th class="py-3 tracking-widest small opacity-50">TIMESTAMP</th>
+                    <th class="pe-4 py-3 text-end tracking-widest small opacity-50">ACTION_PROTOCOL</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var l in Model)
+            {
+                <tr class="border-bottom border-secondary border-opacity-10">
+                    <td class="ps-4">
+                        <div class="fw-bold fs-6">@l.CustomerName.ToUpper()</div>
+                    </td>
+                    <td class="fw-mono small">@l.Phone</td>
+                    <td>
+                        <div class="small fw-bold opacity-75">@l.TourName?.ToUpper()</div>
+                    </td>
+                    <td class="fw-mono">@l.PersonCount.ToString("00")</td>
+                    <td class="small opacity-50">@l.TourDate?.ToString("yyyy-MM-dd")</td>
+                    <td class="pe-4 text-end">
+                        <a href="tel:@l.Phone" class="btn btn-luxury px-4 py-2">
+                            INITIATE_CALL &rarr;
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .fw-mono { font-family: 'Courier New', Courier, monospace; }
+    .table-dark { background-color: transparent !important; }
+    .table-hover tbody tr:hover { background-color: rgba(255,255,255,0.03) !important; }
+    .tracking-tight { letter-spacing: -3px; }
+</style>

@@ -1,33 +1,49 @@
 using Ejder.Domain.Reservations;
+using Ejder.Domain.Repositories;
 
 namespace Ejder.Application.Reservations.Services;
 
 public class ReservationService : IReservationService
 {
-    // PR4: in-memory (sonra EF repo’ya geçilecek)
-    private static readonly List<Reservation> _items = new();
-    private static int _seq = 1;
+    private readonly IReservationRepository _repo;
 
-    public IEnumerable<Reservation> GetAll() => _items.OrderByDescending(x => x.Id);
-
-    public Reservation? GetById(int id) => _items.FirstOrDefault(x => x.Id == id);
-
-    public Reservation Create(Reservation reservation)
+    public ReservationService(IReservationRepository repo)
     {
-        reservation.Id = _seq++;
+        _repo = repo;
+    }
+
+    public async Task<IEnumerable<Reservation>> GetAllAsync() 
+        => await _repo.GetAllAsync();
+
+    public async Task<Reservation?> GetByIdAsync(int id) 
+        => await _repo.GetByIdAsync(id);
+
+    public async Task<Reservation> CreateAsync(Reservation reservation)
+    {
         if (reservation.AmountTry <= 0 && reservation.UnitPrice > 0 && (reservation.PersonCount ?? 0) > 0)
         {
             reservation.AmountTry = reservation.UnitPrice * (reservation.PersonCount ?? 0);
         }
 
-        _items.Add(reservation);
+        await _repo.AddAsync(reservation);
+        await _repo.SaveChangesAsync();
         return reservation;
     }
 
-    public void UpdateStatus(int id, ReservationStatus status)
+    public async Task UpdateStatusAsync(int id, ReservationStatus status)
     {
-        var item = GetById(id);
+        var item = await _repo.GetByIdAsync(id);
         if (item == null) return;
+
         item.Status = status;
+
+        if (status == ReservationStatus.Approved && string.IsNullOrWhiteSpace(item.Pnr))
+        {
+            item.Pnr = Guid.NewGuid().ToString("N")[..6].ToUpper();
+        }
+
+        _repo.Update(item);
+        await _repo.SaveChangesAsync();
     }
 }
+

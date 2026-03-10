@@ -4,7 +4,7 @@ namespace Ejder.Application.Tours.Services;
 
 public interface ITourProgramService
 {
-    List<TourProgramDay> GetByProduct(int productId);
-    void AddDay(TourProgramDay day);
-    void Add(TourProgramDay day);
+    Task<IEnumerable<TourProgramDay>> GetByProductAsync(int productId);
+    Task AddDayAsync(TourProgramDay day);
+    Task AddAsync(TourProgramDay day);
 }

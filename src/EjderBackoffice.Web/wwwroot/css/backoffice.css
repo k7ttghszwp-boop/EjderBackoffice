@@ -1,101 +1,136 @@
-/* ================================
-   SIDEBAR TOGGLE (DESKTOP + MOBILE)
-   + HOVER ile otomatik açılma
-   ================================ */
+/* backoffice.css - Extended styles for Admin portal */
 
-/* Topbar sol alan */
-.bo-topbar-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
+:root {
+    --sidebar-bg: var(--ejder-black);
+    --card-bg: var(--ejder-dark);
 }
 
-/* Menü butonları */
-.bo-menu-btn{
-    border:none;
-    background:transparent;
-    font-size:20px;
-    cursor:pointer;
-    padding:8px 10px;
-    border-radius:10px;
-}
-.bo-menu-btn:hover{
-    background: rgba(0,0,0,.06);
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    margin: 0;
 }
 
-/* Desktop / Mobile görünürlük */
-.bo-menu-btn-mobile{ display:none; }
-.bo-menu-btn-desktop{ display:inline-flex; }
-
-/* =====================
-   DESKTOP COLLAPSED
-   ===================== */
-.bo-shell.bo-collapsed .bo-sidebar{
-    width: 78px;
-    padding: 18px 10px;
-    transition: width .2s ease;
+.bo-shell {
+    display: flex;
+    min-height: 100vh;
 }
 
-/* brand yazıları gizle (senin HTML: bo-brand-text) */
-.bo-shell.bo-collapsed .bo-brand-text{
-    display:none;
+.bo-sidebar {
+    width: 280px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-/* menü yazıları ortala */
-.bo-shell.bo-collapsed .bo-nav-item{
-    text-align:center;
-    padding:10px 0;
-    font-size:13px;
+.bo-brand {
+    margin-bottom: 3rem;
 }
 
-/* =====================
-   HOVER ile AÇILMA
-   ===================== */
-.bo-shell.bo-collapsed .bo-sidebar:hover{
-    width: 260px; /* normal sidebar width */
+.bo-logo {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -2px;
 }
 
-/* hover ile brand geri gelsin */
-.bo-shell.bo-collapsed .bo-sidebar:hover .bo-brand-text{
-    display:block;
+.bo-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-/* hover ile menü normal görünsün */
-.bo-shell.bo-collapsed .bo-sidebar:hover .bo-nav-item{
-    text-align:left;
-    padding:10px 12px;
+.bo-nav-item {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.8rem 1rem;
+    border-radius: 0px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+    border-left: 2px solid transparent;
 }
 
-/* =====================
-   MOBILE SIDEBAR
-   ===================== */
-.bo-overlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    background: rgba(0,0,0,.35);
-    z-index:40;
+.bo-nav-item:hover,
+.bo-nav-item.active {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: var(--accent);
 }
 
-@media (max-width: 992px){
-    .bo-menu-btn-mobile{ display:inline-flex; }
-    .bo-menu-btn-desktop{ display:none; }
+.bo-main {
+    flex-grow: 1;
+    background: #000;
+}
 
-    .bo-sidebar{
-        position: fixed;
-        top:0;
-        left:0;
-        height:100vh;
-        transform: translateX(-105%);
-        transition: transform .25s ease;
-        z-index:50;
-    }
+.bo-topbar {
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+}
 
-    .bo-shell.bo-mobile-open .bo-sidebar{
-        transform: translateX(0);
-    }
+.bo-topbar-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
 
-    .bo-shell.bo-mobile-open .bo-overlay{
-        display:block;
-    }
+.bo-content {
+    padding: 2rem;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+}
+
+.table {
+    color: var(--text-primary);
+}
+
+.table thead th {
+    border-bottom: 2px solid var(--border-color);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.table td {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: white;
+    color: black;
+    border: none;
+    border-radius: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.6rem 1.2rem;
+}
+
+.btn-primary:hover {
+    background: #e0e0e0;
+}
+
+.badge-soft {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0;
+    font-size: 0.7rem;
+    text-transform: uppercase;
 }

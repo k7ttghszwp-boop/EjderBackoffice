@@ -1,21 +1,36 @@
 using Ejder.Domain.Tours;
+using Ejder.Domain.Repositories;
 
 namespace Ejder.Application.Tours.Services;
 
 public class TourDocumentService : ITourDocumentService
 {
-    private static readonly List<TourDocument> _docs = new();
+    private readonly IRepository<TourDocument> _repo;
 
-    public TourDocument? GetByProduct(int productId)
-        => _docs.FirstOrDefault(x => x.ProductId == productId);
+    public TourDocumentService(IRepository<TourDocument> repo)
+    {
+        _repo = repo;
+    }
 
-    public void Save(TourDocument doc)
+    public async Task<TourDocument?> GetByProductAsync(int productId)
+    {
+        var docs = await _repo.FindAsync(x => x.ProductId == productId);
+        return docs.FirstOrDefault();
+    }
+
+    public async Task SaveAsync(TourDocument doc)
     {
         // aynı productId için overwrite
-        var existing = _docs.FirstOrDefault(x => x.ProductId == doc.ProductId);
-        if (existing != null) _docs.Remove(existing);
+        var docs = await _repo.FindAsync(x => x.ProductId == doc.ProductId);
+        var existing = docs.FirstOrDefault();
+        
+        if (existing != null) 
+        {
+            _repo.Remove(existing);
+        }
 
-        doc.Id = _docs.Count == 0 ? 1 : _docs.Max(x => x.Id) + 1;
-        _docs.Add(doc);
+        await _repo.AddAsync(doc);
+        await _repo.SaveChangesAsync();
     }
 }
+

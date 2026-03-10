@@ -1,9 +1,8 @@
 namespace Ejder.Domain.Reservations;
+using Ejder.Domain;
 
-public class Reservation
+public class Reservation : BaseEntity
 {
-    public int Id { get; set; }
-
     public int ProductId { get; set; }
     public string TourName { get; set; } = "";
 
@@ -19,6 +18,4 @@ public class Reservation
     public string? Pnr { get; set; }
 
     public ReservationStatus Status { get; set; } = ReservationStatus.Pending;
-
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

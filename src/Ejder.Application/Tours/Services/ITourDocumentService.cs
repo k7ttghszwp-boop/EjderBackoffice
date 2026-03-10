@@ -4,6 +4,6 @@ namespace Ejder.Application.Tours.Services;
 
 public interface ITourDocumentService
 {
-    TourDocument? GetByProduct(int productId);
-    void Save(TourDocument doc);
+    Task<TourDocument?> GetByProductAsync(int productId);
+    Task SaveAsync(TourDocument doc);
 }

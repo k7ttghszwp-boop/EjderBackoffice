@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\Ejder.Core\Ejder.Core.csproj" />
+    <ProjectReference Include="..\Ejder.Domain\Ejder.Domain.csproj" />
+    <ProjectReference Include="..\Ejder.Application\Ejder.Application.csproj" />
+    <ProjectReference Include="..\Ejder.Infrastructure\Ejder.Infrastructure.csproj" />
+
   </ItemGroup>
 
   <PropertyGroup>

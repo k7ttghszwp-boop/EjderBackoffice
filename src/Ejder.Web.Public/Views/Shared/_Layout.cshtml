@@ -6,174 +6,121 @@
     <title>@ViewData["Title"] - Ejder Turizm</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        :root{
-            --brand:#9C2D2D;
-            --beige:#FAEBD7;
-        }
-        .bg-brand{ background: var(--brand) !important; }
-        .text-brand{ color: var(--brand) !important; }
-        .btn-brand{
-            background: var(--brand);
-            border-color: var(--brand);
-            color:#fff;
-        }
-        .btn-brand:hover{ filter: brightness(.95); color:#fff; }
-        .nav-link{ font-weight: 500; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true">
 
     @RenderSection("Styles", required: false)
 </head>
-<body class="bg-light">
+<body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-brand sticky-top shadow-sm">
+<!-- Top Header for Account & Contacts -->
+<div class="top-header d-none d-lg-block">
+    <div class="container d-flex justify-content-end align-items-center gap-4">
+        <div>
+            <span class="text-muted"><i class="bi bi-question-circle"></i> Yardım</span>
+            <span class="ms-3 text-muted">Acenteler</span>
+            <span class="ms-3 fw-bold"><i class="bi bi-telephone"></i> 444 0 387</span>
+        </div>
+        <div class="d-flex gap-3 border-start ps-4">
+            <a href="/Hesabim"><i class="bi bi-person"></i> Hesabım</a>
+            <a href="/Rezervasyonlarim"><i class="bi bi-card-list"></i> Rezervasyonlarım</a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/">🐉 Ejder Turizm</a>
+        <a class="navbar-brand" href="/">
+            ejderturizm <span>| BİZE UYAR</span>
+        </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="nav">
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-                <li class="nav-item"><a class="nav-link" href="/Tours">Turlar</a></li>
-                <li class="nav-item"><a class="nav-link" href="/Contact">İletişim</a></li>
-                <li class="nav-item ms-lg-2">
-                    <a class="btn btn-outline-light btn-sm" href="tel:08503330203">📞 0850 333 0 203</a>
+        <div class="collapse navbar-collapse rounded-3 p-3 p-lg-0 bg-white" id="nav">
+            <ul class="navbar-nav mx-auto align-items-center gap-1 gap-lg-3">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Otel</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/Oteller/Antalya">Antalya Otelleri</a></li>
+                        <li><a class="dropdown-item" href="/Oteller/Bodrum">Bodrum Otelleri</a></li>
+                    </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Tur</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/Turlar/Yurtici">Yurt İçi Turlar</a></li>
+                        <li><a class="dropdown-item" href="/Turlar/Yurtdisi">Yurt Dışı Turlar</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#">Kıbrıs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Mısır</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Villa</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Ulaşım</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Uçak Bileti</a></li>
+                        <li><a class="dropdown-item" href="#">Otobüs Bileti</a></li>
+                        <li><a class="dropdown-item" href="#">Transfer</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#">Kampanyalar</a></li>
+                <li class="nav-item"><a class="nav-link fw-bold" href="#">Erken Rezervasyon</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<header class="ets-header border-bottom bg-white">
-    <div class="container-fluid px-4">
-        <div class="d-flex align-items-center justify-content-between py-3">
-
-            <!-- LEFT: Logo -->
-            <a href="/" class="d-flex align-items-center gap-2 text-decoration-none">
-                <span class="fw-bold fs-4" style="color:#d10a10; letter-spacing:.2px;">
-                    ejder<span style="color:#d10a10;">tur</span>
-                </span>
-                <span class="small fw-semibold" style="color:#d10a10;">| 2026</span>
-            </a>
-
-            <!-- CENTER: Menu -->
-            <nav class="d-none d-lg-flex align-items-center gap-4">
-                <div class="dropdown">
-                    <a class="nav-link dropdown-toggle ets-navlink" href="#" data-bs-toggle="dropdown">Otel</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/Hotels">Tüm Oteller</a></li>
-                        <li><a class="dropdown-item" href="/Hotels?type=allinclusive">Her Şey Dahil</a></li>
-                    </ul>
-                </div>
-
-                <div class="dropdown">
-                    <a class="nav-link dropdown-toggle ets-navlink" href="#" data-bs-toggle="dropdown">Tur</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/Tours">Tüm Turlar</a></li>
-                        <li><a class="dropdown-item" href="/Tours?q=Küba">Küba</a></li>
-                        <li><a class="dropdown-item" href="/Tours?q=Japonya">Japonya</a></li>
-                    </ul>
-                </div>
-
-                <a class="ets-navlink text-decoration-none" href="/Tours?q=Kıbrıs">Kıbrıs</a>
-                <a class="ets-navlink text-decoration-none" href="/Villas">Villa</a>
-                <a class="ets-navlink text-decoration-none" href="/Flights">Uçak</a>
-                <a class="ets-navlink text-decoration-none" href="/Buses">Otobüs</a>
-                <a class="ets-navlink text-decoration-none" href="/Campaigns">Kampanyalar</a>
-
-                <a class="ets-navlink text-decoration-none fw-semibold" href="/EarlyBooking" style="color:#ff7a00;">
-                    Erken Rezervasyon
-                </a>
-            </nav>
-
-            <!-- RIGHT: actions -->
-            <div class="d-flex align-items-center gap-3">
-                <div class="d-none d-lg-flex align-items-center gap-3">
-
-                    <!-- ✅ Burayı sadece bilgilerle güncelledik -->
-                    <a class="ets-phone text-decoration-none d-flex align-items-center gap-2" href="tel:08503330203">
-                        <span class="fs-6">📞</span>
-                        <span class="fw-semibold">0850 333 0 203</span>
-                    </a>
-
-                    <a class="ets-phone text-decoration-none d-flex align-items-center gap-2" href="tel:02127065379">
-                        <span class="fs-6">☎️</span>
-                        <span class="fw-semibold">0212 706 53 79</span>
-                    </a>
-
-                    <a class="ets-navlink text-decoration-none d-flex align-items-center gap-2" href="mailto:info@ejderturizm.com.tr">
-                        <span>✉️</span>
-                        <span class="fw-semibold">info@ejderturizm.com.tr</span>
-                    </a>
-
-                    <a class="ets-navlink text-decoration-none d-flex align-items-center gap-2"
-                       href="https://wa.me/15557038977" target="_blank" rel="noopener">
-                        <span>💬</span>
-                        <span class="fw-semibold">+1 555 703-8977</span>
-                        <span class="small text-muted">(WhatsApp Destek)</span>
-                    </a>
-
-                </div>
-
-                <!-- MOBILE: hamburger -->
-                <button class="btn d-lg-none border" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav">
-                    ☰
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MOBILE OFFCANVAS -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileNav">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Menü</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <a class="d-block py-2 text-decoration-none" href="/Tours">Tur</a>
-            <a class="d-block py-2 text-decoration-none" href="/Hotels">Otel</a>
-            <a class="d-block py-2 text-decoration-none" href="/Campaigns">Kampanyalar</a>
-            <a class="d-block py-2 text-decoration-none" href="/EarlyBooking" style="color:#ff7a00;">Erken Rezervasyon</a>
-
-            <hr />
-
-            <!-- ✅ Mobile iletişim bilgileri -->
-            <a class="d-block py-2 text-decoration-none" href="tel:08503330203">📞 0850 333 0 203</a>
-            <a class="d-block py-2 text-decoration-none" href="tel:02127065379">☎️ 0212 706 53 79</a>
-            <a class="d-block py-2 text-decoration-none" href="mailto:info@ejderturizm.com.tr">✉️ info@ejderturizm.com.tr</a>
-            <a class="d-block py-2 text-decoration-none" href="https://wa.me/15557038977" target="_blank" rel="noopener">
-                💬 WhatsApp: +1 555 703-8977
-            </a>
-
-            <hr />
-
-            <!-- Senin eski linklerin (dokunmadım) -->
-            <a class="d-block py-2 text-decoration-none" href="/Contact">Yardım</a>
-            <a class="d-block py-2 text-decoration-none" href="/Account">Hesabım</a>
-            <a class="d-block py-2 text-decoration-none" href="/Reservations">Rezervasyonlarım</a>
-        </div>
-    </div>
-</header>
-
-<style>
-    .ets-header { position: sticky; top: 0; z-index: 1030; }
-    .ets-navlink { color: #111; font-weight: 500; font-size: 15px; }
-    .ets-navlink:hover { color: #9C2D2D; }
-    .ets-phone { color: #111; }
-    .ets-phone:hover { color: #9C2D2D; }
-</style>
-
-<main class="container my-4">
+<main class="fade-in">
     @RenderBody()
 </main>
 
-<footer class="border-top py-4 mt-5 bg-white">
-    <div class="container d-flex justify-content-between small text-muted flex-wrap gap-2">
-        <span>© @DateTime.Now.Year Ejder Turizm</span>
-        <span>Butik yurt dışı turlar • Call Center Satış</span>
+<footer class="footer">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <h4 class="fw-bold mb-3">ejderturizm</h4>
+                <p class="text-muted small mb-4">Milyonlarca misafirimizin tatil hayalini gerçekleştirmenin mutluluğunu yaşıyoruz.</p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-muted fs-5"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-muted fs-5"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="text-muted fs-5"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-muted fs-5"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5 class="footer-heading">Hakkımızda</h5>
+                <a href="#" class="footer-link">Kurumsal</a>
+                <a href="#" class="footer-link">Bize Ulaşın</a>
+                <a href="#" class="footer-link">Acenteler</a>
+                <a href="#" class="footer-link">İnsan Kaynakları</a>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5 class="footer-heading">Müşteri Hizmetleri</h5>
+                <a href="#" class="footer-link">Sıkça Sorulan Sorular</a>
+                <a href="#" class="footer-link">İptal ve İade Koşulları</a>
+                <a href="#" class="footer-link">KVKK Aydınlatma Metni</a>
+                <a href="#" class="footer-link">Gizlilik Sözleşmesi</a>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5 class="footer-heading">Popüler Aramalar</h5>
+                <a href="#" class="footer-link">Antalya Otelleri</a>
+                <a href="#" class="footer-link">Kıbrıs Otelleri</a>
+                <a href="#" class="footer-link">Uçak Bileti</a>
+                <a href="#" class="footer-link">Yurt Dışı Turları</a>
+            </div>
+            <div class="col-lg-3 border-start ps-lg-4">
+                <h5 class="footer-heading">Bizi Arayın</h5>
+                <p class="fs-4 fw-bold mb-1">444 0 387</p>
+                <p class="text-muted small">Her gün 09:00 - 24:00 arası</p>
+            </div>
+        </div>
+        <div class="text-center pt-4 border-top">
+            <p class="text-muted small mb-0">&copy; @DateTime.Now.Year Ejder Turizm Seyahat Acentası Bütün Hakları Saklıdır.</p>
+        </div>
     </div>
 </footer>
 

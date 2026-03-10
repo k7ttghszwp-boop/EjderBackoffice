@@ -1,223 +1,144 @@
-@model Ejder.Web.Public.Models.Tour
+@model Ejder.Application.Tours.DTOs.TourDto
 @{
-    ViewData["Title"] = Model.Title;
-    Layout = "_Layout";
+    string lang = ViewBag.Lang ?? "tr";
+    ViewData["Title"] = lang == "tr" ? Model.Name_TR : Model.Name_EN;
 }
 
-@if (TempData["Ok"] != null)
-{
-    <div class="alert alert-success">@TempData["Ok"]</div>
-}
-@if (TempData["Err"] != null)
-{
-    <div class="alert alert-danger">@TempData["Err"]</div>
-}
-
-<div class="row g-4">
-    <div class="col-lg-7">
-        <div class="card shadow-sm rounded-4 overflow-hidden">
-            <img src="@Model.ImageUrl" class="img-fluid" style="height:320px; width:100%; object-fit:cover;" />
-            <div class="card-body">
-                <div class="text-muted small">@Model.Country • @Model.Days Gün</div>
-                <h2 class="fw-bold mt-1">@Model.Title</h2>
-                <p class="text-muted">@Model.Summary</p>
-
-                <div class="d-flex gap-2 flex-wrap">
-                    <span class="badge bg-light text-dark border">Premium</span>
-                    <span class="badge bg-light text-dark border">Butik Grup</span>
-                    <span class="badge bg-light text-dark border">Rehberli</span>
-                </div>
-
-                <hr />
-
-                <h5 class="fw-bold">Öne Çıkanlar</h5>
-                <ul class="list-unstyled mb-0">
-                @foreach (var h in Model.Highlights)
-                {
-                    <li class="mb-1">✔️ @h</li>
-                }
-                </ul>
-
-            </div>
-        </div>
-
-        <div class="card shadow-sm rounded-4 mt-4">
-            <div class="card-body">
-                <h5 class="fw-bold mb-3">Program</h5>
-
-                <div class="accordion" id="accProg">
-                    @for (int i = 0; i < Model.Program.Count; i++)
-                    {
-                        var itemId = $"p{i}";
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="h-@itemId">
-                                <button class="accordion-button @(i==0 ? "" : "collapsed")" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#c-@itemId">
-                                    Gün @(i+1)
-                                </button>
-                            </h2>
-                            <div id="c-@itemId" class="accordion-collapse collapse @(i==0 ? "show" : "")"
-                                 data-bs-parent="#accProg">
-                                <div class="accordion-body">
-                                    @Model.Program[i]
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-3 mt-4">
-            <div class="col-md-6">
-                <div class="card shadow-sm rounded-4 h-100">
-                    <div class="card-body">
-                        <h6 class="fw-bold">Dahil Olanlar</h6>
-                        <ul class="mb-0">
-                            @foreach (var x in Model.Included)
-                            {
-                                <li>@x</li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm rounded-4 h-100">
-                    <div class="card-body">
-                        <h6 class="fw-bold">Dahil Olmayanlar</h6>
-                        <ul class="mb-0">
-                            @foreach (var x in Model.NotIncluded)
-                            {
-                                <li>@x</li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-5">
-        <div class="card shadow-sm rounded-4 sticky-top" style="top:90px;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-muted small">Kişi başı</div>
-                    <div class="fw-bold fs-4 text-brand">
-                        ₺ <span id="priceValue">@Model.PriceTry.ToString("N0")</span>
-                    </div>
-                    <div id="capacityAlert" class="alert alert-warning py-2 px-3 mt-3 d-none mb-0">
-                        Seçilen tarihte kontenjan sınırlı.
-                    </div>
-
-                </div>
-
-                <div id="selectedDateInfo" class="text-muted small mt-1">
-                    Tarih seçilince burada görünecek.
-                </div>
-
-
-                <hr />
-
-                <h5 class="fw-bold mb-3">Rezervasyon Talebi</h5>
-
-                <form method="post" action="/Tours/RequestTour">
-                    <input type="hidden" name="id" value="@Model.Id" />
-
-                    <div class="mb-2">
-                        <label class="form-label">Ad Soyad</label>
-                        <input class="form-control" name="fullName" required />
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label">Telefon</label>
-                        <input class="form-control" name="phone" required />
-                    </div>
-
-                    <div class="mb-2">
-                        <label class="form-label">E-posta</label>
-                        <input class="form-control" name="email" type="email" />
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label">Tur Tarihi</label>
-                        <select class="form-select" id="tourDateSelect" name="tourDateId" required>
-                            <option value="">Tarih seçin</option>
-
-                            @foreach (var d in Model.Dates.OrderBy(x => x.StartDate))
-                            {
-                                var disabled = d.Available <= 0;
-                                var label = $"{d.RangeText} • ₺ {d.PriceTry:N0} • Kontenjan: {d.Available}/{d.Capacity}";
-                                <option
-                                    value="@d.Id"
-                                    data-price="@d.PriceTry"
-                                    data-range="@d.RangeText"
-                                    data-available="@d.Available"
-                                    disabled="@(disabled ? "disabled" : null)">
-                                    @label @(disabled ? " (DOLU)" : "")
-                                </option>
-                            }
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label">Kişi Sayısı</label>
-                        <input class="form-control" name="pax" type="number" min="1" value="2" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Not</label>
-                        <textarea class="form-control" name="note" rows="3"></textarea>
-                    </div>
-
-                    <button class="btn btn-brand w-100 py-2">
-                        📞 Ücretsiz Bilgi Al
-                    </button>
-                    <div class="text-muted small mt-2">
-                            Ödeme alınmaz. Uzman ekibimiz sizi arayarak tüm detayları paylaşır
-                    </div>
-                </form>
+<!-- Hero Section -->
+<div class="tour-hero position-relative overflow-hidden" style="height: 60vh;">
+    <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/placeholder-tour-full.jpg" : Model.ImageUrl)" class="w-100 h-100 object-fit-cover scale-hover" alt="@(lang == "tr" ? Model.Name_TR : Model.Name_EN)">
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-40"></div>
+    <div class="position-absolute bottom-0 start-0 w-100 p-5 text-white">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="/@lang/tours" class="text-white opacity-75 text-decoration-none">@(lang == "tr" ? "Turlar" : "Tours")</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">@(lang == "tr" ? Model.CategoryName_TR : Model.CategoryName_EN)</li>
+                </ol>
+            </nav>
+            <h1 class="display-3 fw-bold mb-0">@(lang == "tr" ? Model.Name_TR : Model.Name_EN)</h1>
+            <div class="d-flex gap-4 mt-3 opacity-90">
+                <span><i class="bi bi-calendar3 me-2"></i> @Model.StartDate.ToString("dd MMMM yyyy") - @Model.EndDate.ToString("dd MMMM yyyy")</span>
+                <span><i class="bi bi-people me-2"></i> @Model.MaxParticipants @(lang == "tr" ? "Kişilik Kontenjan" : "Capacity")</span>
             </div>
         </div>
     </div>
 </div>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Content -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5 mb-4">
+                <h4 class="fw-bold mb-4">@(lang == "tr" ? "Tur Detayları" : "Tour Details")</h4>
+                <div class="tour-description fs-5 text-muted lh-lg">
+                    @Html.Raw(lang == "tr" ? Model.Description_TR : Model.Description_EN)
+                </div>
+            </div>
+
+            <!-- Program / Itinerary (If we had separate program items, we would list them here) -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-lg-5">
+                <h4 class="fw-bold mb-4">@(lang == "tr" ? "Önemli Bilgiler" : "Important Info")</h4>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">@(lang == "tr" ? "Ulaşım Dahil" : "Transport Included")</h6>
+                                <p class="text-muted small mb-0">@(lang == "tr" ? "Lüks otobüslerle konforlu yolculuk." : "Comfortable travel with luxury buses.")</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">@(lang == "tr" ? "Profesyonel Rehber" : "Professional Guide")</h6>
+                                <p class="text-muted small mb-0">@(lang == "tr" ? "Tecrübeli rehberler eşliğinde anlatım." : "Narrated by experienced guides.")</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar / Booking Form -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 100px;">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+                    <div class="card-body p-4 p-lg-5">
+                        <div class="mb-4">
+                            @if (Model.DiscountedPrice.HasValue)
+                            {
+                                <div class="text-muted text-decoration-line-through fs-5">@Model.Price.ToString("C0")</div>
+                                <div class="text-primary fw-extrabold display-5">@Model.DiscountedPrice.Value.ToString("C0")</div>
+                                <div class="text-muted small mt-1">@(lang == "tr" ? "kişi başından başlayan fiyatlarla" : "starting from per person")</div>
+                            }
+                            else
+                            {
+                                <div class="text-primary fw-extrabold display-5">@Model.Price.ToString("C0")</div>
+                                <div class="text-muted small mt-1">@(lang == "tr" ? "kişi başı" : "per person")</div>
+                            }
+                        </div>
+
+                        <hr class="my-4 opacity-10">
+
+                        <h5 class="fw-bold mb-4">@(lang == "tr" ? "Bilgi Al & Rezervasyon Talebi" : "Get Info & Booking Request")</h5>
+                        <form id="bookingForm" class="row g-3">
+                            <input type="hidden" name="TourId" value="@Model.Id" />
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-uppercase opacity-75">@(lang == "tr" ? "Ad Soyad" : "Full Name")</label>
+                                <input type="text" class="form-control form-control-lg border-0 bg-light" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-uppercase opacity-75">@(lang == "tr" ? "E-posta" : "Email")</label>
+                                <input type="email" class="form-control form-control-lg border-0 bg-light" placeholder="john@example.com" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-uppercase opacity-75">@(lang == "tr" ? "Telefon" : "Phone")</label>
+                                <input type="tel" class="form-control form-control-lg border-0 bg-light" placeholder="+90" required>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm py-3">
+                                    @(lang == "tr" ? "Talebi Gönder" : "Send Request")
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-muted small mb-0">@(lang == "tr" ? "Hızlı rezervasyon için arayın:" : "Call for fast booking:")</p>
+                    <a href="tel:4440387" class="text-dark fw-bold text-decoration-none fs-4">444 0 387</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fw-extrabold { font-weight: 800; }
+    .object-fit-cover { object-fit: cover; }
+    .scale-hover { transition: transform 10s linear; }
+    .tour-hero:hover .scale-hover { transform: scale(1.15); }
+    .tour-description p { margin-bottom: 1.5rem; }
+    .form-control:focus { background-color: #fff !important; box-shadow: none; border: 1px solid var(--bs-primary) !important; }
+</style>
+
 @section Scripts {
-<script>
-(function () {
-  const select = document.getElementById('tourDateSelect');
-  const priceValue = document.getElementById('priceValue');
-  const info = document.getElementById('selectedDateInfo');
-  const alertBox = document.getElementById('capacityAlert');
-
-  if (!select || !priceValue || !info) return;
-
-  const fmt = new Intl.NumberFormat('tr-TR');
-
-  function update() {
-    const opt = select.options[select.selectedIndex];
-    if (!opt || !opt.value) {
-      info.textContent = "Lütfen bir tur tarihi seçin.";
-      alertBox?.classList.add('d-none');
-      return;
-    }
-
-    const price = parseFloat(opt.dataset.price || "0");
-    const range = opt.dataset.range || "";
-    const available = parseInt(opt.dataset.available || "0", 10);
-
-    if (!isNaN(price) && price > 0) {
-      priceValue.textContent = fmt.format(price);
-    }
-
-    info.textContent = `Seçilen tarih: ${range} • Kalan kontenjan: ${available}`;
-
-    // Kontenjan azsa uyarı göster (ör: 5 ve altı)
-    if (alertBox) {
-      if (available <= 5) alertBox.classList.remove('d-none');
-      else alertBox.classList.add('d-none');
-    }
-  }
-
-  select.addEventListener('change', update);
-  update();
-})();
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('bookingForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: '@(lang == "tr" ? "Talebiniz Alındı!" : "Request Received!")',
+                text: '@(lang == "tr" ? "Danışmanlarımız en kısa sürede sizinle iletişime geçecektir." : "Our consultants will contact you as soon as possible.")',
+                icon: 'success',
+                confirmButtonText: 'Tamam',
+                confirmButtonColor: '#0d6efd'
+            }).then(() => {
+                this.reset();
+            });
+        });
+    </script>
 }

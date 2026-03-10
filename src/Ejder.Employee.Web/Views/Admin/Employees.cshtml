@@ -1,4 +1,4 @@
-@using Ejder.Core.HR
+@using Ejder.Domain.HR
 @model IEnumerable<Employee>
 
 <h1>Personel Listesi</h1>
@@ -13,16 +13,17 @@
 
 @foreach (var e in Model)
 {
-    var dept = DepartmentRepository.GetById(e.DepartmentId);
+    var departments = ViewBag.Departments as IEnumerable<Department>;
+    var dept = departments?.FirstOrDefault(x => x.Id == e.DepartmentId);
     var manager = e.ReportsToEmployeeId.HasValue
-        ? EmployeeRepository.GetById(e.ReportsToEmployeeId.Value)
+        ? Model.FirstOrDefault(x => x.Id == e.ReportsToEmployeeId.Value)
         : null;
 
     <tr>
         <td>@e.FullName</td>
         <td>@dept?.Name</td>
         <td>@e.Role</td>
-        <td>@manager?.FullName ?? "-"</td>
+        <td>@(manager?.FullName ?? "-")</td>
     </tr>
 }
 </table>

@@ -1,69 +1,96 @@
-@model Ejder.Core.Models.Reservation
-
+@model Ejder.Domain.Reservations.Reservation
 @{
-    ViewData["Title"] = "Rezervasyon Talebi";
+    Layout = "_Layout";
 
-    var unitPrice = Model.UnitPrice ?? 0;
-    var personCount = Model.PersonCount ?? 1;
+    // UnitPrice: decimal (nullable değil)
+    var unitPriceVal = Model.UnitPrice;
+
+    // PersonCount: int? ise
+    var count = Model.PersonCount ?? 1;
+    if (count <= 0) { count = 1; }
+
+    var total = unitPriceVal * count;
+
+    // TourDate: DateTime?
+    var dateValue = (Model.TourDate ?? DateTime.Today).ToString("yyyy-MM-dd");
+
+    // JS parseFloat için invariant format (3,50 -> 3.50)
+    var unitPriceInvariant = unitPriceVal.ToString(System.Globalization.CultureInfo.InvariantCulture);
 }
 
-<section class="section">
-    <h1>@Model.TourName</h1>
-    <p>Rezervasyon Talep Formu</p>
+<h2>Rezervasyon Talebi</h2>
 
-    <form method="post" class="form-card">
+<form method="post" class="card p-4 shadow-sm" style="max-width:600px">
+    @Html.AntiForgeryToken()
 
-        @Html.AntiForgeryToken()
+    <input type="hidden" name="ProductId" value="@Model.ProductId" />
+    <input type="hidden" name="TourName" value="@Model.TourName" />
+    <input type="hidden" id="UnitPrice" value="@unitPriceInvariant" />
 
-        <input type="hidden" asp-for="ProductId" />
-        <input type="hidden" asp-for="TourName" />
-        <input type="hidden" asp-for="UnitPrice" />
+    <div class="mb-3">
+        <label class="form-label">Tur</label>
+        <input class="form-control" value="@Model.TourName" disabled />
+    </div>
 
-        <label>Müşteri Adı</label>
-        <input asp-for="CustomerName" />
-        <span asp-validation-for="CustomerName"></span>
+    <div class="mb-3">
+        <label class="form-label">Tur Tarihi</label>
+        <input type="date"
+               class="form-control"
+               name="TourDate"
+               value="@dateValue"
+               required />
+    </div>
 
-        <label>Telefon</label>
-        <input asp-for="Phone" />
-        <span asp-validation-for="Phone"></span>
-
-        <label>Tur Tarihi</label>
-        <input asp-for="TourDate" type="date" />
-
-        <label>Kişi Sayısı</label>
-        <input asp-for="PersonCount"
-               type="number"
+    <div class="mb-3">
+        <label class="form-label">Kişi Sayısı</label>
+        <input type="number"
+               class="form-control"
+               name="PersonCount"
+               id="PersonCount"
                min="1"
-               id="personCount" />
+               value="@count"
+               required />
+    </div>
 
-        <div class="price-box">
-            <div>Birim Fiyat</div>
-            <strong>₺ @unitPrice.ToString("N0")</strong>
-        </div>
+    <div class="mb-3">
+        <label class="form-label">Ad Soyad</label>
+        <input class="form-control" name="CustomerName" value="@Model.CustomerName" required />
+    </div>
 
-        <div class="price-box total">
-            <div>Toplam Tutar</div>
-            <strong id="totalPrice">
-                ₺ @(unitPrice * personCount).ToString("N0")
-            </strong>
-        </div>
+    <div class="mb-3">
+        <label class="form-label">Telefon</label>
+        <input class="form-control" name="Phone" value="@Model.Phone" required />
+    </div>
 
-        <button type="submit" class="btn primary">
-            Rezervasyon Talebi Gönder
-        </button>
-    </form>
-</section>
+    <div class="alert alert-light border d-flex justify-content-between">
+        <span>Toplam Tutar</span>
+        <strong id="TotalPrice">₺ @total.ToString("N0")</strong>
+    </div>
+
+    <button type="submit" class="btn btn-brand w-100">
+        Talep Gönder
+    </button>
+</form>
 
 @section Scripts {
 <script>
-    const personInput = document.getElementById("personCount");
-    const totalEl = document.getElementById("totalPrice");
-    const unitPrice = @unitPrice;
+    const unitPrice = parseFloat(document.getElementById("UnitPrice").value);
+    const personInput = document.getElementById("PersonCount");
+    const totalPriceEl = document.getElementById("TotalPrice");
 
-    personInput.addEventListener("input", () => {
-        const count = parseInt(personInput.value || 1);
-        const total = count * unitPrice;
-        totalEl.innerText = "₺ " + total.toLocaleString("tr-TR");
-    });
+    function updateTotal() {
+        const count = parseInt(personInput.value, 10);
+
+        if (isNaN(unitPrice) || isNaN(count) || count <= 0) {
+            totalPriceEl.innerText = "₺ —";
+            return;
+        }
+
+        const total = unitPrice * count;
+        totalPriceEl.innerText = "₺ " + total.toLocaleString("tr-TR");
+    }
+
+    personInput.addEventListener("input", updateTotal);
+    updateTotal();
 </script>
 }

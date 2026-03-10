@@ -4,6 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Ejder.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Ejder.Api.Controllers;
 
@@ -12,17 +15,21 @@ namespace Ejder.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IConfiguration _config;
+    private readonly AppDbContext _db;
 
-    public AuthController(IConfiguration config)
+    public AuthController(IConfiguration config, AppDbContext db)
     {
         _config = config;
+        _db = db;
     }
 
     [HttpPost("login")]
-    public IActionResult Login(LoginRequest req)
+    public async Task<IActionResult> Login(LoginRequest req)
     {
-        // ŞİMDİLİK HARD-CODE (sonra DB)
-        if (req.Email != "admin@ejderturizm.com.tr" || req.Password != "123456")
+        var user = await _db.BackofficeUsers
+            .FirstOrDefaultAsync(u => u.Email == req.Email && u.IsActive);
+
+        if (user == null || !BC.Verify(req.Password, user.PasswordHash))
             return Unauthorized("Invalid credentials");
 
         var jwt = _config.GetSection("Jwt");
@@ -32,8 +39,8 @@ public class AuthController : ControllerBase
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, req.Email),
-            new Claim(ClaimTypes.Role, "Admin")
+            new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.Role, user.Role)
         };
 
         var token = new JwtSecurityToken(

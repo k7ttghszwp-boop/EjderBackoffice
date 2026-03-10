@@ -1,18 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
-using Ejder.Core.Repositories;
-using Ejder.Core.Models;
+using Ejder.Application.Reservations.Services;
+using Ejder.Domain.Reservations;
 
 namespace Ejder.CallCenter.Web.Controllers;
 
 public class LeadsController : Controller
 {
-    public IActionResult Index()
+    private readonly IReservationService _reservationService;
+
+    public LeadsController(IReservationService reservationService)
+    {
+        _reservationService = reservationService;
+    }
+
+    public async Task<IActionResult> Index()
     {
         // Şimdilik Yeni + Onaylanmamış rezervasyonlar
-        var leads = ReservationRepository.GetAll()
-            .Where(x => x.Status == ReservationStatus.Yeni)
-            .OrderByDescending(x => x.CreatedAt);
+        var all = await _reservationService.GetAllAsync();
+        var leads = all.Where(x => x.Status == ReservationStatus.Pending);
 
         return View(leads);
     }
 }
+

@@ -1,67 +1,290 @@
 @{
     Layout = "_LayoutBackoffice";
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "SYSTEM_OVERVIEW";
 }
 
-<div class="cards">
-    <div class="card">
-        <div class="card-title">Bugün Rezervasyon</div>
-        <div class="card-value">12</div>
-        <div class="card-foot">Dün: 9</div>
+<div class="ej-dashboard-light">
+    <div class="ej-page-title">
+        <div>
+            <h1 class="fw-semibold">Haftalık Rezervasyon Tablosu</h1>
+            <div class="ej-page-subtitle">MERKEZİ OPERASYON GÖRÜNÜMÜ</div>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="card-title">Açık Talepler</div>
-        <div class="card-value">5</div>
-        <div class="card-foot">Bekleyen işlem</div>
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+            <div class="ej-card d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="ej-stat-label">Hızlı Erişim</div>
+                    <div class="fw-semibold">Yeni Rezervasyon</div>
+                </div>
+                <div class="text-success fs-3">
+                    <i class="fa-solid fa-cart-plus"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="ej-card d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="ej-stat-label">Hızlı Erişim</div>
+                    <div class="fw-semibold">Manuel Rezervasyon</div>
+                </div>
+                <div class="text-success fs-3">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="ej-card d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="ej-stat-label">Hızlı Erişim</div>
+                    <div class="fw-semibold">Tüm Rezervasyonlar</div>
+                </div>
+                <div class="text-success fs-3">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="card-title">Bugün Satış</div>
-        <div class="card-value">₺ 128.450</div>
-        <div class="card-foot">Tahmini</div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">Aktif Turlar</div>
-        <div class="card-value">23</div>
-        <div class="card-foot">Bu hafta</div>
-    </div>
-</div>
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">Dashboard</h3>
-
-        <form asp-controller="Account" asp-action="Logout" method="post">
-            @Html.AntiForgeryToken()
-            <button class="btn btn-outline-danger btn-sm">Çıkış</button>
-        </form>
+    <div class="ej-stat-row">
+        <div class="ej-stat-card">
+            <div class="ej-stat-label">Bugünkü Rezervasyonlar</div>
+            <div class="ej-stat-value">12</div>
+            <div class="ej-stat-meta">
+                <span class="ej-badge-delta success">+3 bugün</span>
+            </div>
+        </div>
+        <div class="ej-stat-card">
+            <div class="ej-stat-label">Bekleyen Talepler</div>
+            <div class="ej-stat-value">5</div>
+            <div class="ej-stat-meta">
+                <span class="ej-badge-delta warning">Öncelik: Yüksek</span>
+            </div>
+        </div>
+        <div class="ej-stat-card">
+            <div class="ej-stat-label">Tahmini Gelir</div>
+            <div class="ej-stat-value fs-4">₺ 128.450</div>
+            <div class="ej-stat-meta">
+                <span class="ej-badge-delta success">TRY</span>
+            </div>
+        </div>
+        <div class="ej-stat-card">
+            <div class="ej-stat-label">Aktif Turlar</div>
+            <div class="ej-stat-value">23</div>
+            <div class="ej-stat-meta">
+                <span class="ej-badge-delta success">Operasyonel</span>
+            </div>
+        </div>
     </div>
 
     <div class="row g-3">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="text-muted">Toplam Personel</div>
-                    <div class="fs-3 fw-bold">—</div>
+        <div class="col-12 col-lg-8">
+            <div class="ej-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Haftalık İlerleme</h5>
+                    <span class="ej-page-subtitle" style="font-size: 0.7rem;">Rezervasyon / Müşteri / Talep</span>
                 </div>
+                <canvas id="ej-weekly-chart" height="120"></canvas>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="text-muted">Açık IT Ticket</div>
-                    <div class="fs-3 fw-bold">—</div>
+        <div class="col-12 col-lg-4">
+            <div class="ej-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Son Talepler</h6>
+                    <span class="badge bg-primary bg-opacity-10 text-primary">Canlı</span>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="text-muted">Bugün Gelen Talepler</div>
-                    <div class="fs-3 fw-bold">—</div>
-                </div>
+                <ul class="list-unstyled mb-0 small">
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <div>
+                            <div class="fw-semibold">#RZ-1042</div>
+                            <div class="text-muted">Ahmet Yılmaz · Korfu Adası</div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-success-subtle text-success">Onaylandı</span><br />
+                            <small class="text-muted">10:42</small>
+                        </div>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <div>
+                            <div class="fw-semibold">#RZ-1041</div>
+                            <div class="text-muted">Merve K. · Kapadokya</div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-warning-subtle text-warning">Opsiyon</span><br />
+                            <small class="text-muted">09:58</small>
+                        </div>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <div>
+                            <div class="fw-semibold">#RZ-1040</div>
+                            <div class="text-muted">Global Travel · Balkanlar</div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-info-subtle text-info">Acenta</span><br />
+                            <small class="text-muted">09:21</small>
+                        </div>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center py-2">
+                        <div>
+                            <div class="fw-semibold">#RZ-1039</div>
+                            <div class="text-muted">Elif D. · Dubai</div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-danger-subtle text-danger">Ödeme Bekleniyor</span><br />
+                            <small class="text-muted">08:47</small>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
+
+<div class="ej-dashboard-dark">
+    <div class="d-flex align-items-end justify-content-between mb-4">
+        <div>
+            <h1 class="fw-bold text-uppercase mb-1" style="letter-spacing: 0.16em;">COMMAND_DASHBOARD</h1>
+            <div class="ej-page-subtitle">GLOBAL_METRICS // CORE_VERSION_02.B</div>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-light btn-sm rounded-0 border-secondary px-4 text-uppercase" href="/admin/Dashboard/Index">RESCAN</a>
+            <a class="btn btn-light btn-sm rounded-0 px-4 text-uppercase fw-bold" href="/admin/Reservations/Create">INIT_RESERVATION</a>
+        </div>
+    </div>
+
+    <div class="row g-0 mb-4">
+        <div class="col-12 col-md-3">
+            <div class="ej-terminal-card border-end-0 border-bottom-0">
+                <div class="ej-stat-label text-uppercase mb-1">RESERVATIONS_TODAY</div>
+                <div class="ej-stat-value">12</div>
+                <div class="ej-stat-meta terminal-text">DELTA: +03</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="ej-terminal-card border-end-0 border-bottom-0">
+                <div class="ej-stat-label text-uppercase mb-1">PENDING_REQUESTS</div>
+                <div class="ej-stat-value">05</div>
+                <div class="ej-stat-meta terminal-text">PRIORITY: HIGH</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="ej-terminal-card border-end-0 border-bottom-0">
+                <div class="ej-stat-label text-uppercase mb-1">REVENUE_ESTIMATED</div>
+                <div class="ej-stat-value fs-4">₺ 128.450</div>
+                <div class="ej-stat-meta terminal-text">CURRENCY: TRY</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="ej-terminal-card border-bottom-0">
+                <div class="ej-stat-label text-uppercase mb-1">ACTIVE_EXPEDITIONS</div>
+                <div class="ej-stat-value">23</div>
+                <div class="ej-stat-meta terminal-text">STATUS: OPERATIONAL</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 col-lg-8">
+            <div class="ej-terminal-card scan-line">
+                <div class="ej-terminal-header">
+                    <h3 class="ej-terminal-title">INBOUND_QUEUE</h3>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="status-pulse"></span>
+                        <span class="terminal-text small">LIVE_STREAM_ACTIVE</span>
+                    </div>
+                </div>
+                <div id="ej-inbound-stream" class="ej-terminal-stream terminal-text">
+                    <div>[SYSTEM_NOTIFICATION] Listener started.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="ej-terminal-card">
+                <h3 class="ej-terminal-title mb-3">CORE_STATUS</h3>
+                <ul class="ej-status-list">
+                    <li class="ej-status-item">
+                        <span class="ej-status-key">API_GATEWAY</span>
+                        <span class="ej-status-value ej-status-badge-online">[ONLINE]</span>
+                    </li>
+                    <li class="ej-status-item">
+                        <span class="ej-status-key">DATABASE_POOL</span>
+                        <span class="ej-status-value ej-status-badge-ready">[READY]</span>
+                    </li>
+                    <li class="ej-status-item">
+                        <span class="ej-status-key">SMTP_WORKER</span>
+                        <span class="ej-status-value ej-status-badge-idle">[IDLE]</span>
+                    </li>
+                    <li class="ej-status-item">
+                        <span class="ej-status-key">NETWORK_LATENCY</span>
+                        <span id="ej-status-latency" class="ej-status-value">14ms</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var ctx = document.getElementById("ej-weekly-chart");
+            if (!ctx || !window.Chart) return;
+
+            var chart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"],
+                    datasets: [
+                        {
+                            label: "Rezervasyonlar",
+                            data: [12, 15, 13, 18, 20, 16, 14],
+                            borderColor: "#27AE60",
+                            backgroundColor: "rgba(39,174,96,0.1)",
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: "Müşteriler",
+                            data: [8, 10, 9, 12, 14, 11, 10],
+                            borderColor: "#2E86C1",
+                            backgroundColor: "rgba(46,134,193,0.08)",
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: "Talepler",
+                            data: [5, 7, 6, 9, 11, 8, 7],
+                            borderColor: "#F39C12",
+                            backgroundColor: "rgba(243,156,18,0.08)",
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                boxWidth: 14
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

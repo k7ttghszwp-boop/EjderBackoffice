@@ -1,27 +1,35 @@
 using Ejder.Domain.Tours;
+using Ejder.Domain.Repositories;
 
 namespace Ejder.Application.Tours.Services;
 
 public class TourProgramService : ITourProgramService
 {
-    // basit in-memory store
-    private static readonly List<TourProgramDay> _days = new();
+    private readonly IRepository<TourProgramDay> _repo;
 
-    public List<TourProgramDay> GetByProduct(int productId)
-        => _days.Where(x => x.ProductId == productId)
-                .OrderBy(x => x.DayNumber)
-                .ToList();
-
-    public void AddDay(TourProgramDay day)
+    public TourProgramService(IRepository<TourProgramDay> repo)
     {
-        day.Id = _days.Count == 0 ? 1 : _days.Max(x => x.Id) + 1;
-        _days.Add(day);
+        _repo = repo;
     }
-    public void Add(TourProgramDay day)
+
+    public async Task<IEnumerable<TourProgramDay>> GetByProductAsync(int productId)
+    {
+        return await _repo.FindAsync(x => x.ProductId == productId);
+    }
+
+    public async Task AddDayAsync(TourProgramDay day)
+    {
+        await _repo.AddAsync(day);
+        await _repo.SaveChangesAsync();
+    }
+
+    public async Task AddAsync(TourProgramDay day)
     {
         // basic guard
         if (day.DayNumber <= 0) day.DayNumber = 1;
 
-        _days.Add(day);
+        await _repo.AddAsync(day);
+        await _repo.SaveChangesAsync();
     }
 }
+

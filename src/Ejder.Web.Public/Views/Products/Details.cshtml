@@ -1,75 +1,46 @@
-@model Ejder.Core.Models.Product
-@using Ejder.Core.Models
+@model Ejder.Web.Public.Models.ProductDetailsVm
 
 @{
-    ViewData["Title"] = Model.Name;
-
-    var program = ViewBag.Program as IEnumerable<TourProgramDay>;
-    var doc = ViewBag.Document as TourDocument;
+    var p = Model.Product;
 }
 
-<section class="hero">
-    <h1>@Model.Name</h1>
-    <p>@Model.DurationDays Günlük Premium Tur Deneyimi</p>
-</section>
+<h2>@p.Name</h2>
 
-<section class="section">
-    <h2>Tur Hakkında</h2>
+<div>
+    <div><b>Süre:</b> @p.Days gün</div>
+    <div><b>Fiyat:</b> ₺ @p.Price.ToString("N0")</div>
+</div>
 
-    <p>
-        Ejder Turizm tarafından özenle hazırlanmış,
-        butik ve premium bir yurt dışı tur deneyimi.
-    </p>
+<hr />
 
-    <div class="info-box">
-        <div><b>Süre:</b> @Model.DurationDays Gün</div>
-        <div><b>Başlangıç Fiyatı:</b> ₺ @Model.Price.ToString("N0")</div>
-    </div>
+<h3>Program</h3>
 
-    <div class="actions">
-        <a class="btn primary"
-           href="/Reservations/Create?productId=@Model.Id">
-            Rezervasyon Talebi
-        </a>
-
-        <a class="btn secondary" href="/products">
-            ← Tüm Turlar
-        </a>
-    </div>
-</section>
-
-@if (program != null && program.Any())
+@if (Model.Program == null || !Model.Program.Any())
 {
-    <section class="section">
-        <h2>Tur Programı</h2>
-
-        <div class="timeline">
-            @foreach (var day in program)
-            {
-                <div class="timeline-item">
-                    <div class="timeline-day">
-                        Gün @day.DayNumber
-                    </div>
-                    <div class="timeline-content">
-                        <h4>@day.Title</h4>
-                        <p>@day.Description</p>
-                    </div>
-                </div>
-            }
+    <div>Program henüz eklenmemiş.</div>
+}
+else
+{
+    foreach (var d in Model.Program.OrderBy(x => x.DayNumber))
+    {
+        <div style="margin-bottom:10px;">
+            <b>Gün @d.DayNumber:</b> @d.Title
+            <div>@d.Description</div>
         </div>
-    </section>
+    }
 }
 
-@if (doc != null && !string.IsNullOrWhiteSpace(doc.FilePath))
-{
-    <section class="section">
-        <h2>Detaylı Program</h2>
+<hr />
 
-        <a class="btn outline"
-           href="@doc.FilePath"
-           target="_blank"
-           rel="noopener">
-            📄 Program PDF’ini İndir
-        </a>
-    </section>
+<h3>Doküman</h3>
+
+@if (Model.Document != null)
+{
+    <a href="@Model.Document.FilePath" target="_blank">
+        @Model.Document.FileName
+    </a>
+}
+else
+{
+    <div>PDF bulunamadı.</div>
 }

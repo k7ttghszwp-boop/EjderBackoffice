@@ -1,30 +1,37 @@
 using Ejder.Application.Products.Dtos;
 using Ejder.Domain.Products;
+using Ejder.Domain.Repositories;
 
 namespace Ejder.Application.Products.Services;
 
 public class ProductService : IProductService
 {
-    private static readonly List<Product> _products = new();
+    private readonly IProductRepository _repo;
 
-    public List<Product> GetAll()
-        => _products;
+    public ProductService(IProductRepository repo)
+    {
+        _repo = repo;
+    }
 
-    public Product? GetById(int id)
-        => _products.FirstOrDefault(x => x.Id == id);
+    public async Task<IEnumerable<Product>> GetAllAsync()
+        => await _repo.GetAllAsync();
 
-    public Product Create(ProductCreateDto dto)
+    public async Task<Product?> GetByIdAsync(int id)
+        => await _repo.GetByIdAsync(id);
+
+    public async Task<Product> CreateAsync(ProductCreateDto dto)
     {
         var product = new Product
         {
-            Id = _products.Count == 0 ? 1 : _products.Max(x => x.Id) + 1,
             Name = dto.Name,
             Days = dto.Days,
             Price = dto.Price,
             IsActive = true
         };
 
-        _products.Add(product);
+        await _repo.AddAsync(product);
+        await _repo.SaveChangesAsync();
         return product;
     }
 }
+

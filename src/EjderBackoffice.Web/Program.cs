@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 using Ejder.Infrastructure.Persistence;
+using Ejder.Infrastructure.Repositories;
+using Ejder.Domain.Repositories;
 using EjderBackoffice.Web.Authorization;
 
 using Ejder.Application.Products.Services;
@@ -12,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // MVC
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
 
 // SQL Server
 var connStr = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -24,6 +27,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
     });
 });
+
+// --------------------
+// Repositories
+// --------------------
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 
 // --------------------
 // Application Services
@@ -83,7 +95,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Products}/{action=Index}/{id?}"
+    pattern: "{controller=Tour}/{action=Index}/{id?}"
 );
 
 // Seed

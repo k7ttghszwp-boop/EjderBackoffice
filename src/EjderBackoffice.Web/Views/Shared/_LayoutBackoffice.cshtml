@@ -1,106 +1,201 @@
-<div style="background:red;color:white;padding:10px">
-    LAYOUT BACKOFFICE ÇALIŞIYOR
-</div>
+@using System.Security.Claims
+@{
+    var title = (ViewData["Title"]?.ToString() ?? "OVERVIEW");
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var userName = User?.Identity?.Name ?? "ADMIN";
+    var tempSuccess = TempData["Success"]?.ToString();
+    var tempError = TempData["Error"]?.ToString();
+    var tempWarning = TempData["Warning"]?.ToString();
+}
 
-
-@using Microsoft.AspNetCore.Http
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Ejder Backoffice</title>
+    <title>@title - EJDER BACKOFFICE</title>
 
-    <!-- Bootstrap (CDN) -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
 
-    <!-- Senin CSS -->
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+
+    <!-- SweetAlert2 (JS only, CSS handled by default) -->
+
+    <!-- Custom Theme -->
+    <link rel="stylesheet" href="~/css/ejder-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ejder-ui.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/backoffice.css" asp-append-version="true" />
 </head>
 
-<body>
+<body data-temp-success="@tempSuccess" data-temp-error="@tempError" data-temp-warning="@tempWarning">
 
-<div class="bo-shell" id="boShell">
-    <aside class="bo-sidebar" id="boSidebar">
-        <div class="bo-brand">
-            <div class="bo-logo">E</div>
-            <div class="bo-brand-text">
-                <div class="bo-brand-title">Ejder</div>
-                <div class="bo-brand-sub">Backoffice</div>
+<div class="ej-shell">
+    <aside class="ej-sidebar">
+        <!-- LIGHT: Icon-only, DARK: Expanded nav -->
+        <nav>
+            <div class="ej-sidebar-nav">
+                <a class="ej-sidebar-item @(currentController=="Dashboard" ? "ej-active" : "")"
+                   href="/admin/Dashboard/Index"
+                   data-ej-nav="/admin/dashboard">
+                    <i class="fa-solid fa-display"></i>
+                    <span class="ej-sidebar-label d-none d-md-inline">Overview</span>
+                    <span class="ej-sidebar-tooltip">Overview</span>
+                </a>
+
+                <div class="ej-sidebar-group-title d-none d-md-block">TOUR MANAGEMENT</div>
+
+                <a class="ej-sidebar-item @(currentController=="Tour" ? "ej-active" : "")"
+                   asp-controller="Tour"
+                   asp-action="Index"
+                   data-ej-nav="/admin/tour">
+                    <i class="fa-solid fa-route"></i>
+                    <span class="ej-sidebar-label d-none d-md-inline">Tours</span>
+                    <span class="ej-sidebar-tooltip">Tours</span>
+                </a>
+
+                <a class="ej-sidebar-item @(currentController=="Category" ? "ej-active" : "")"
+                   asp-controller="Category"
+                   asp-action="Index"
+                   data-ej-nav="/admin/category">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span class="ej-sidebar-label d-none d-md-inline">Categories</span>
+                    <span class="ej-sidebar-tooltip">Categories</span>
+                </a>
+
+                <div class="ej-sidebar-group-title d-none d-md-block">RESERVATIONS</div>
+
+                <a class="ej-sidebar-item @(currentController=="Reservations" ? "ej-active" : "")"
+                   href="/admin/Reservations/Index"
+                   data-ej-nav="/admin/reservations">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="ej-sidebar-label d-none d-md-inline">Reservations</span>
+                    <span class="ej-sidebar-tooltip">Reservations</span>
+                </a>
+
+                <div class="ej-sidebar-group-title d-none d-md-block">COLLECTIONS</div>
+
+                <a class="ej-sidebar-item @(currentController=="Products" ? "ej-active" : "")"
+                   href="/admin/Products/Index"
+                   data-ej-nav="/admin/products">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span class="ej-sidebar-label d-none d-md-inline">Products</span>
+                    <span class="ej-sidebar-tooltip">Collections</span>
+                </a>
+
+                <div class="ej-sidebar-group-title d-none d-md-block">AUDIENCE</div>
+
+                <a class="ej-sidebar-item @(currentController=="Customers" ? "ej-active" : "")"
+                   href="/admin/Customers/Index"
+                   data-ej-nav="/admin/customers">
+                    <i class="fa-solid fa-users"></i>
+                    <span class="ej-sidebar-label d-none d-md-inline">Customers</span>
+                    <span class="ej-sidebar-tooltip">Audience</span>
+                </a>
+
+                <div class="ej-sidebar-group-title d-none d-md-block">FINANCIALS</div>
+
+                <a class="ej-sidebar-item @(currentController=="Finance" ? "ej-active" : "")"
+                   href="/admin/Finance/Index"
+                   data-ej-nav="/admin/finance">
+                    <i class="fa-solid fa-coins"></i>
+                    <span class="ej-sidebar-label d-none d-md-inline">Finance</span>
+                    <span class="ej-sidebar-tooltip">Financials</span>
+                </a>
+
+                <div class="ej-sidebar-group-title d-none d-md-block">INFRASTRUCTURE</div>
+
+                <a class="ej-sidebar-item @(currentController=="Settings" ? "ej-active" : "")"
+                   href="/admin/Settings/Index"
+                   data-ej-nav="/admin/settings">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span class="ej-sidebar-label d-none d-md-inline">Settings</span>
+                    <span class="ej-sidebar-tooltip">Infrastructure</span>
+                </a>
             </div>
-        </div>
-
-        <nav class="bo-nav">
-            <a class="bo-nav-item" href="/Dashboard">Dashboard</a>
-            <a class="bo-nav-item" href="/Reservations">Rezervasyonlar</a>
-            <a class="bo-nav-item" href="/Products">Turlar</a>
-            <a class="bo-nav-item" href="#">Müşteriler</a>
-            <a class="bo-nav-item" href="#">Finans</a>
-            <a class="bo-nav-item" href="#">Ayarlar</a>
         </nav>
+
+        <div class="ej-sidebar-footer">
+            <a class="ej-sidebar-terminate" href="/Auth/Logout">
+                TERMINATE SESSION
+            </a>
+        </div>
     </aside>
 
-    <main class="bo-main">
-        <header class="bo-topbar">
-            <div class="bo-topbar-left">
-                <button class="bo-menu-btn bo-menu-btn-desktop" id="boMenuDesktopBtn" type="button">☰</button>
-                <button class="bo-menu-btn bo-menu-btn-mobile" id="boMenuMobileBtn" type="button">☰</button>
-                <div class="bo-topbar-title">@ViewData["Title"]</div>
+    <main class="ej-main">
+        <header class="ej-header">
+            <div class="ej-header-left">
+                <a href="/admin/Dashboard/Index" class="ej-logo">
+                    <span class="ej-logo-main">E</span>
+                    <span class="ej-logo-sub">jder Merkez</span>
+                </a>
             </div>
 
-            <div class="bo-user">
-                <span class="bo-user-name">@User.Identity?.Name</span>
-                <a class="bo-logout" href="/Auth/Logout">Çıkış</a>
+            <div class="ej-header-center d-none d-md-flex">
+                <a href="/admin/Reservations/Create" class="ej-header-quick">
+                    <span>🛒</span>
+                    <span>Yeni Rezervasyon</span>
+                </a>
+            </div>
+
+            <div class="ej-header-right">
+                <div class="ej-header-meta d-none d-lg-flex">
+                    <span>🇹🇷 <span>10 Mart 2026 Salı</span></span>
+                    <span><i class="fa-regular fa-bell"></i></span>
+                    <span><i class="fa-regular fa-envelope"></i></span>
+                    <span class="ej-pill">USD = 44.4 TL 🧮</span>
+                    <span class="ej-header-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <span class="ej-header-icon"><i class="fa-solid fa-print"></i></span>
+                </div>
+
+                <div class="ej-user-chip d-none d-md-flex">
+                    <div class="text-end me-1">
+                        <div class="small text-uppercase" style="font-size: 10px; opacity: 0.6;">AUTHORIZED_USER</div>
+                        <div class="fw-semibold">@userName</div>
+                    </div>
+                    <div class="ej-user-avatar">
+                        @userName.Substring(0,1).ToUpper()
+                    </div>
+                </div>
+
+                <button id="ej-theme-toggle" type="button" class="ej-theme-toggle">
+                    <span>🌙</span><span>Dark Mod</span>
+                </button>
             </div>
         </header>
 
-        <div class="bo-overlay" id="boOverlay"></div>
-
-        <section class="bo-content">
+        <section class="ej-main-inner ej-fade-in">
             @RenderBody()
         </section>
     </main>
 </div>
 
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/tr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-(function () {
-    const shell = document.getElementById('boShell');
-    const sidebar = document.getElementById('boSidebar');
-    const btnDesktop = document.getElementById('boMenuDesktopBtn');
-    const btnMobile = document.getElementById('boMenuMobileBtn');
-    const overlay = document.getElementById('boOverlay');
-
-    if (!shell || !sidebar) return;
-
-    if (localStorage.getItem('bo_sidebar_collapsed') === '1') {
-        shell.classList.add('bo-collapsed');
-    }
-
-    btnDesktop?.addEventListener('click', () => {
-        shell.classList.toggle('bo-collapsed');
-        localStorage.setItem('bo_sidebar_collapsed', shell.classList.contains('bo-collapsed') ? '1' : '0');
-    });
-
-    const openMobile = () => shell.classList.add('bo-mobile-open');
-    const closeMobile = () => shell.classList.remove('bo-mobile-open');
-
-    btnMobile?.addEventListener('click', () => {
-        shell.classList.contains('bo-mobile-open') ? closeMobile() : openMobile();
-    });
-
-    overlay?.addEventListener('click', closeMobile);
-
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeMobile();
-    });
-
-    sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobile));
-})();
-</script>
+<script src="~/js/ejder-app.js" asp-append-version="true" defer></script>
 
 @RenderSection("Scripts", required: false)
 </body>
-
 </html>

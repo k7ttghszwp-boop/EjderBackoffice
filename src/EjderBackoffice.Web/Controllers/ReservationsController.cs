@@ -22,12 +22,12 @@ public class ReservationsController : Controller
     }
 
     // LIST + FILTER
-    public IActionResult Index(string? q = null, ReservationStatus? status = null)
+    public async Task<IActionResult> Index(string? q = null, ReservationStatus? status = null)
     {
         ViewBag.Q = q;
         ViewBag.Status = status;
 
-        var list = _reservations.GetAll();
+        var list = await _reservations.GetAllAsync();
 
         if (!string.IsNullOrWhiteSpace(q))
         {
@@ -46,9 +46,9 @@ public class ReservationsController : Controller
     }
 
     // DETAILS
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        var item = _reservations.GetById(id);
+        var item = await _reservations.GetByIdAsync(id);
         if (item is null) return NotFound();
         return View(item);
     }
@@ -56,21 +56,22 @@ public class ReservationsController : Controller
     // STATUS UPDATE
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult UpdateStatus(int id, ReservationStatus status)
+    public async Task<IActionResult> UpdateStatus(int id, ReservationStatus status)
     {
-        _reservations.UpdateStatus(id, status);
+        await _reservations.UpdateStatusAsync(id, status);
         TempData["Success"] = "Durum başarıyla güncellendi ✅";
         return RedirectToAction(nameof(Details), new { id });
     }
 
     // CREATE (GET)
-    public IActionResult Create(int? productId = null)
+    public async Task<IActionResult> Create(int? productId = null)
     {
-        LoadToursToViewBag();
+        await LoadToursToViewBagAsync();
 
         if (productId.HasValue)
         {
-            var tour = _products.GetAll().FirstOrDefault(x => x.Id == productId.Value);
+            var tours = await _products.GetAllAsync();
+            var tour = tours.FirstOrDefault(x => x.Id == productId.Value);
             if (tour != null)
             {
                 var dto = new ReservationCreateDto
@@ -95,15 +96,16 @@ public class ReservationsController : Controller
     // CREATE (POST)
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(ReservationCreateDto dto, int tourId)
+    public async Task<IActionResult> Create(ReservationCreateDto dto, int tourId)
     {
-        var tour = _products.GetAll().FirstOrDefault(x => x.Id == tourId);
+        var tours = await _products.GetAllAsync();
+        var tour = tours.FirstOrDefault(x => x.Id == tourId);
         if (tour is null)
             ModelState.AddModelError(nameof(tourId), "Lütfen bir tur seçin.");
 
         if (!ModelState.IsValid)
         {
-            LoadToursToViewBag();
+            await LoadToursToViewBagAsync();
             return View(dto);
         }
 
@@ -121,15 +123,16 @@ public class ReservationsController : Controller
             Status = ReservationStatus.Pending
         };
 
-        _reservations.Create(reservation);
+        await _reservations.CreateAsync(reservation);
 
         TempData["Success"] = "Rezervasyon eklendi ✅";
         return RedirectToAction(nameof(Index));
     }
 
-    private void LoadToursToViewBag()
+    private async Task LoadToursToViewBagAsync()
     {
-        ViewBag.Tours = _products.GetAll()
+        var tours = await _products.GetAllAsync();
+        ViewBag.Tours = tours
             .Select(x => new SelectListItem
             {
                 Text = x.Name,
